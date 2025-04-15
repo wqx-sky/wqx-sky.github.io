@@ -1,0 +1,507 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Unity小框架 | 游戏开发笔记</title><meta name="author" content="wqx"><meta name="copyright" content="wqx"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="《唐老师基础小框架解析与代码》一.单例模式基类1.不继承MonoBehaviour的单例模式基类 (1).为什么要写单例模式基类  用面对对象的思想避免代码冗余(多余、重复)  代码(普通单例模式)   1234567891011121314public class TestMgr&#123;    private static TestMgr instance;    public static">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity小框架">
+<meta property="og:url" content="http://wqxblog.top/Unity/%E5%B0%8F%E6%A1%86%E6%9E%B6/%E3%80%8A%E5%94%90%E8%80%81%E5%B8%88%E5%9F%BA%E7%A1%80%E5%B0%8F%E6%A1%86%E6%9E%B6%E8%A7%A3%E6%9E%90%E4%B8%8E%E4%BB%A3%E7%A0%81%E3%80%8B/index.html">
+<meta property="og:site_name" content="游戏开发笔记">
+<meta property="og:description" content="《唐老师基础小框架解析与代码》一.单例模式基类1.不继承MonoBehaviour的单例模式基类 (1).为什么要写单例模式基类  用面对对象的思想避免代码冗余(多余、重复)  代码(普通单例模式)   1234567891011121314public class TestMgr&#123;    private static TestMgr instance;    public static">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg">
+<meta property="article:published_time" content="2025-04-15T11:54:13.381Z">
+<meta property="article:modified_time" content="2025-04-15T11:56:10.866Z">
+<meta property="article:author" content="wqx">
+<meta property="article:tag" content="框架">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Unity小框架",
+  "url": "http://wqxblog.top/Unity/%E5%B0%8F%E6%A1%86%E6%9E%B6/%E3%80%8A%E5%94%90%E8%80%81%E5%B8%88%E5%9F%BA%E7%A1%80%E5%B0%8F%E6%A1%86%E6%9E%B6%E8%A7%A3%E6%9E%90%E4%B8%8E%E4%BB%A3%E7%A0%81%E3%80%8B/",
+  "image": "https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg",
+  "datePublished": "2025-04-15T11:54:13.381Z",
+  "dateModified": "2025-04-15T11:56:10.866Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "wqx",
+      "url": "http://wqxblog.top/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://wqxblog.top/Unity/%E5%B0%8F%E6%A1%86%E6%9E%B6/%E3%80%8A%E5%94%90%E8%80%81%E5%B8%88%E5%9F%BA%E7%A1%80%E5%B0%8F%E6%A1%86%E6%9E%B6%E8%A7%A3%E6%9E%90%E4%B8%8E%E4%BB%A3%E7%A0%81%E3%80%8B/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Unity小框架',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 25%,#34495e 45%,#2980b9 80%,#1a1a1a 100%);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 40%,#34495e 60%,#2980b9 80%,#1a1a1a 100%);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">游戏开发笔记</span></a><a class="nav-page-title" href="/"><span class="site-name">Unity小框架</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Unity小框架</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-04-15T11:54:13.381Z" title="发表于 2025-04-15 19:54:13">2025-04-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-04-15T11:56:10.866Z" title="更新于 2025-04-15 19:56:10">2025-04-15</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Unity/">Unity</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Unity/%E5%B0%8F%E6%A1%86%E6%9E%B6/">小框架</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>16分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="《唐老师基础小框架解析与代码》"><a href="#《唐老师基础小框架解析与代码》" class="headerlink" title="《唐老师基础小框架解析与代码》"></a>《唐老师基础小框架解析与代码》</h1><h2 id="一-单例模式基类"><a href="#一-单例模式基类" class="headerlink" title="一.单例模式基类"></a>一.单例模式基类</h2><h3 id="1-不继承MonoBehaviour的单例模式基类"><a href="#1-不继承MonoBehaviour的单例模式基类" class="headerlink" title="1.不继承MonoBehaviour的单例模式基类"></a>1.不继承MonoBehaviour的单例模式基类</h3><hr>
+<h4 id="1-为什么要写单例模式基类"><a href="#1-为什么要写单例模式基类" class="headerlink" title="(1).为什么要写单例模式基类"></a>(1).为什么要写单例模式基类</h4><blockquote>
+<ul>
+<li><p>用<u>面对对象的思想避免代码冗余</u>(多余、重复)</p>
+</li>
+<li><p>代码(普通单例模式)</p>
+  <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TestMgr</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> TestMgr instance;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> TestMgr Instance</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">get</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(instance==<span class="literal">null</span>)</span><br><span class="line">                instance=<span class="keyword">new</span> TestMgr();</span><br><span class="line">            <span class="keyword">return</span> instance;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    																									</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  这种单例模式基类我们内容都大差不差，只是类名变了，所以我们要去掉这种代码冗余</p>
+</li>
+</ul>
+</blockquote>
+<hr>
+<h4 id="2-不继承MonoBehaviour的单例模式基类的实现"><a href="#2-不继承MonoBehaviour的单例模式基类的实现" class="headerlink" title="(2).不继承MonoBehaviour的单例模式基类的实现"></a>(2).不继承MonoBehaviour的单例模式基类的实现</h4><blockquote>
+<ul>
+<li><p>代码实现单例模式基类</p>
+  <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">BaseManager</span>&lt;<span class="title">T</span>&gt; <span class="keyword">where</span> <span class="title">T</span>:<span class="keyword">class</span>,<span class="title">new</span>()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> T instance;</span><br><span class="line">    <span class="comment">//属性的方式</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> T Instance</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">get</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(instance==<span class="literal">null</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                instance=<span class="keyword">new</span> T();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> instance;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    																									</span><br><span class="line">    <span class="comment">//方法的方式</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> T <span class="title">GetInstance</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(instance==<span class="literal">null</span>)</span><br><span class="line">            instance=<span class="keyword">new</span> T();</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>主要应用知识点：泛型，泛型约束，内容在<code>《C#进阶之重要内容》</code></p>
+</blockquote>
+<hr>
+<h4 id="3-潜在的安全问题"><a href="#3-潜在的安全问题" class="headerlink" title="(3).潜在的安全问题"></a>(3).潜在的安全问题</h4><blockquote>
+<pre><code>* ①构造函数问题：构造函数可在外部调用  可能会破坏唯一性
+* ②多线程问题：当多个线程同时访问管理器时，可能会出现共享资源的安全访问问题
+</code></pre>
+<p>   这些在后面安全性问题章节再总结。</p>
+</blockquote>
+<hr>
+<h4 id="4-单例模式的优点"><a href="#4-单例模式的优点" class="headerlink" title="(4).单例模式的优点"></a>(4).单例模式的优点</h4><blockquote>
+<ul>
+<li>全局数据共享</li>
+<li>确保唯一性</li>
+<li>方便管理资源</li>
+<li>方便管理对象</li>
+<li>访问简单化</li>
+<li>便于扩展</li>
+<li>切换场景时单例模式的对象还在<ul>
+<li>除非手动滞空，因为整个脚本并没有挂载在物体上，所以在切场景时候不会影响不继承mono的单例</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<hr>
+<hr>
+<h3 id="2-继承MonoBehaviour的单例模式基类"><a href="#2-继承MonoBehaviour的单例模式基类" class="headerlink" title="2.继承MonoBehaviour的单例模式基类"></a>2.继承MonoBehaviour的单例模式基类</h3><hr>
+<h4 id="1-注意事项"><a href="#1-注意事项" class="headerlink" title="(1) 注意事项"></a>(1) 注意事项</h4><blockquote>
+<ul>
+<li><code>继承MonoBehaviour的脚本不能new</code></li>
+<li>继承MOnoBehaviour的脚本一定得<code>依附在GameObject</code>上</li>
+<li>具体为什么，<code>详见unity重要知识点补充</code>（暂未补充）</li>
+<li><code>this 的使用方法详见C#重要知识点补充</code>(已补充)</li>
+</ul>
+</blockquote>
+<hr>
+<h4 id="2-实现挂载式的单例模式基类"><a href="#2-实现挂载式的单例模式基类" class="headerlink" title="(2) 实现挂载式的单例模式基类"></a>(2) 实现挂载式的单例模式基类</h4><blockquote>
+<ul>
+<li>这种模式不建议大家使用</li>
+<li>因为很容易破坏单例模式的唯一性</li>
+<li>1.挂载多个脚本</li>
+<li>2.切换场景回来时，由于场景放置了挂载脚本的对象，回到该场景时，又会有一个单例模式。(一般都是管理器，过场景不被销毁)</li>
+<li>还可以通过代码动态的添加多个该脚本 ，也会破坏唯一性</li>
+</ul>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 继承了mono的单例模式基类</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;typeparam name=&quot;T&quot;&gt;</span>需要用单例模型类的名字<span class="doctag">&lt;/typeparam&gt;</span></span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SingletonMono</span>&lt;<span class="title">T</span>&gt; : <span class="title">MonoBehaviour</span> <span class="keyword">where</span> <span class="title">T</span>:<span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> T instance;</span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">static</span> T Instance </span><br><span class="line"> &#123;</span><br><span class="line">     <span class="keyword">get</span></span><br><span class="line">     &#123;</span><br><span class="line">         <span class="keyword">return</span> instance;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">//继承了Mono的脚本 不能够直接new</span></span><br><span class="line"> <span class="comment">//只能通过拖动到对象上 或者 通过加脚本的api AddComponent去加脚本</span></span><br><span class="line"> <span class="comment">//U3D内部帮助我们实例化它</span></span><br><span class="line"> <span class="comment">//我们需要自己保证它的唯一性</span></span><br><span class="line"> <span class="comment">//缺点：自己可以挂多个，这样就不是单例模式了</span></span><br><span class="line"> <span class="comment">//它只会指向最后挂载的这个对象</span></span><br><span class="line"> <span class="function"><span class="keyword">protected</span> <span class="keyword">virtual</span>  <span class="keyword">void</span> <span class="title">Awake</span>()</span></span><br><span class="line"> &#123;</span><br><span class="line">     <span class="comment">//保证子类重写，实现子类的自定义</span></span><br><span class="line">     instance = <span class="keyword">this</span> <span class="keyword">as</span> T;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>代码测试</p>
+  <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">NewBehaviourScript</span> : <span class="title">SingletonMono</span>&lt;<span class="title">NewBehaviourScript</span>&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Awake</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//重写Awake时 这一定不能省略</span></span><br><span class="line">        <span class="keyword">base</span>.Awake();</span><br><span class="line">    &#125;</span><br><span class="line">																						</span><br><span class="line">    <span class="comment">// Update is called once per frame</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">																						</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">																						</span><br></pre></td></tr></table></figure>
+
+<p>  疑问：我们测试的代码并没有继承mono而是继承的基类，为什么符合mono的泛型约束。</p>
+<p>  回答：<code>因为父类继承了Mono所以我们的测试类也算Mono 的派生类</code></p>
+</li>
+</ul>
+</blockquote>
+<hr>
+<h3 id="3-实现自动挂载式的单例模式基类"><a href="#3-实现自动挂载式的单例模式基类" class="headerlink" title="3.实现自动挂载式的单例模式基类"></a>3.实现自动挂载式的单例模式基类</h3><hr>
+<blockquote>
+<ul>
+<li><code>推荐使用</code></li>
+<li>无需手动挂载，无需动态添加，无需关系切场景带来的问题</li>
+</ul>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 继承这种自动创建的 单例模式的基类 不需要我们手动去拖 或者api去加了，想用直接GetInstance</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;typeparam name=&quot;T&quot;&gt;</span>需要用单例模式类的名字<span class="doctag">&lt;/typeparam&gt;</span></span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SingleAutoMono</span>&lt;<span class="title">T</span>&gt; : <span class="title">MonoBehaviour</span> <span class="keyword">where</span> <span class="title">T</span>:<span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> T instance;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> T Instance</span><br><span class="line">    &#123;</span><br><span class="line">       <span class="keyword">get</span></span><br><span class="line">      &#123;</span><br><span class="line">        <span class="keyword">if</span>(instance==<span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//创建一个新的对象</span></span><br><span class="line">            GameObject obj = <span class="keyword">new</span> GameObject();</span><br><span class="line">            <span class="comment">//得到脚本名，设置对象的名字为脚本名</span></span><br><span class="line">            obj.name = <span class="keyword">typeof</span>(T).ToString();</span><br><span class="line">            <span class="comment">//让这个单例模式对象 过场景 不移除</span></span><br><span class="line">            <span class="comment">//因为 单例模式对象  往往  是存在整个程序生命周期中的</span></span><br><span class="line">            DontDestroyOnLoad(obj);</span><br><span class="line">            <span class="comment">//将管理器脚本挂载到对象上</span></span><br><span class="line">            instance=obj.AddComponent&lt;T&gt;();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//继承了Mono的脚本 不能够直接new</span></span><br><span class="line">    <span class="comment">//只能通过拖动到对象上 或者 通过加脚本的api AddComponent去加脚本</span></span><br><span class="line">    <span class="comment">//U3D内部帮助我们实例化它</span></span><br><span class="line">    <span class="comment">//我们需要自己保证它的唯一性</span></span><br><span class="line">    <span class="comment">//缺点：自己可以挂多个，这样就不是单例模式了</span></span><br><span class="line">    <span class="comment">//它只会指向最后挂载的这个对象</span></span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>具体用法，创建T类型的脚本并且继承基类，在里面写东西</li>
+<li>之后在其他脚本里面调用Instance就可以了。</li>
+</ul>
+</blockquote>
+<hr>
+<h3 id="4-潜在的安全问题"><a href="#4-潜在的安全问题" class="headerlink" title="4.潜在的安全问题"></a>4.潜在的安全问题</h3><blockquote>
+<ul>
+<li><p>构造函数问题：</p>
+<ul>
+<li>继承MonoBehaviour的函数，不能new，所以不用担心公共构造函数问题。</li>
+</ul>
+</li>
+<li><p>多线程问题：</p>
+<ul>
+<li>Unity主线程中相关内容，不允许其他线程直接调用，很少有这样的需求，所以也不用太担心</li>
+</ul>
+</li>
+<li><p><code>重复挂载问题</code></p>
+<ul>
+<li>手动重复挂载</li>
+<li>代码重复添加</li>
+<li>需要人为干涉，定规则，或者通过代码逻辑强制处理</li>
+</ul>
+<p>  所有安全性问题会在后面统一处理</p>
+</li>
+</ul>
+</blockquote>
+<hr>
+<h3 id="5-安全问题-反射，抽象类"><a href="#5-安全问题-反射，抽象类" class="headerlink" title="5.安全问题(反射，抽象类)"></a>5.安全问题(反射，抽象类)</h3><blockquote>
+<ul>
+<li><p>构造函数带来的唯一性问题指的是什么？</p>
+</li>
+<li><p>对于不继承MonoBehaviour的单例模式基类</p>
+<p>我们要避免在外部 <code>new</code>  单例模式类对象。</p>
+</li>
+</ul>
+<hr>
+<ul>
+<li>对于继承MonoBehaviour的单例模式基类</li>
+</ul>
+<p> 由于继承MonoBehaviour的脚本不能通过new’创建，因此不用过多考虑。</p>
+<hr>
+<ul>
+<li><p>解决构造函数带来的安全问题</p>
+</li>
+<li><p>(1)父类变成抽象类</p>
+  <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title">BaseManager</span>&lt;<span class="title">T</span>&gt; <span class="keyword">where</span> <span class="title">T</span> : <span class="keyword">class</span>, <span class="title">new</span>()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//优点：切场景单例模式的对象还在</span></span><br><span class="line">    <span class="comment">//除非手动滞空，因为整个脚本并没有挂载在物体上，所以在切场景的时候不会影响不继承mono的单例</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//这边调用了泛型的无参构造函数</span></span><br><span class="line">    <span class="comment">//那么必须约束T有一个无参构造函数不然会报错</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> T instance = <span class="keyword">new</span> T();</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> T Instance =&gt; instance;</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="title">BaseManager</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//避免小白或者傻逼破坏单例模式</span></span><br><span class="line">        <span class="comment">//可以不用写</span></span><br><span class="line">        <span class="comment">//作用：如果发现有人new了，就可以把他开了</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>(2) 规定继承单例模式基类的类必须显示实现私有无参构造函数(就是把管理器的构造函数私有使其无法new)</p>
+<p>问题：不允许约束new()</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="title">NewBehaviourScript</span>()</span> &#123; &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>(3) 为了解决第二个的问题，在基类中通过反射来调用私有构造函数实例化对象</p>
+ <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//主要知识点：</span></span><br><span class="line">利用Type中的 GetConstructor(约束条件，绑定对象，参数类型，参数修饰符)方法来获取私有无参构造函数</span><br><span class="line">    ConstructorInfo constructor =<span class="keyword">typeof</span>(T).GetConstructor(</span><br><span class="line">BindingFlags.Instance | BindingFlags.NonPublic, <span class="comment">//表示成员私有方法</span></span><br><span class="line">    <span class="literal">null</span>,<span class="comment">//表示没有绑定对象</span></span><br><span class="line">    Type.EmptyTypes,<span class="comment">//表示没有参数</span></span><br><span class="line">    <span class="literal">null</span> <span class="comment">//表示没有参数修饰符</span></span><br><span class="line">);</span><br><span class="line"> 	 	 	 	 	 	 	 	 	 	 	 	 	 	 	 	 	</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<hr>
+</blockquote>
+<h3 id="6-安全问题-唯一性问题—重复挂载"><a href="#6-安全问题-唯一性问题—重复挂载" class="headerlink" title="6. [安全问题]唯一性问题—重复挂载"></a>6. [安全问题]唯一性问题—重复挂载</h3><blockquote>
+<p> <code>知识点</code>： Unity入门(特性，Destroy函数)</p>
+<ul>
+<li><p>重复挂载带来的唯一性问题是什么？</p>
+<ul>
+<li>对于继承了挂载式单例模式基类</li>
+<li>(1) 手动挂载多个相同单例模式脚本</li>
+<li>(2) 代码动态添加多个相同单例模式脚本</li>
+<li>(3) 会出现没用的脚本组件，只有最后一个是有用的</li>
+</ul>
+</li>
+<li><p>解决重复挂载带来的安全问题</p>
+<ul>
+<li><p>(1)同一个对象的重复挂载</p>
+<p>  为脚本添加特性[DisallowMultipleComponent]</p>
+<p>  注：<code>治标不治本，还能挂载到其他物体</code></p>
+</li>
+<li><p>(2) 修改代码逻辑 </p>
+<p>  判断如果存在对象，移除脚本</p>
+  <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">Awake</span>()</span></span><br><span class="line">   &#123;</span><br><span class="line">       <span class="comment">//如果存在一个对象了，就不需要再有一个了</span></span><br><span class="line">       <span class="keyword">if</span> (instance != <span class="keyword">this</span>)</span><br><span class="line">       &#123;</span><br><span class="line">           Destroy(<span class="keyword">this</span>);</span><br><span class="line">           <span class="keyword">return</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">//保证子类重写，实现子类的自定义</span></span><br><span class="line">       instance = <span class="keyword">this</span> <span class="keyword">as</span> T;</span><br><span class="line">       <span class="comment">//保证该脚本的依附的对象过场景不移除</span></span><br><span class="line">       DontDestroyOnLoad(<span class="keyword">this</span>.gameObject);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对于自动挂载式的单例模式脚本，要制定使用规则，不允许手动挂载或代码添加</p>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="7-安全问题-线程安全—是否加锁"><a href="#7-安全问题-线程安全—是否加锁" class="headerlink" title="7. [安全问题] 线程安全—是否加锁"></a>7. [安全问题] 线程安全—是否加锁</h3><blockquote>
+<p>知识点：<code>C#多线程知识点</code></p>
+<ul>
+<li>是否加锁问题指什么？</li>
+</ul>
+<p>如果程序当中存在多线程</p>
+<p>   我们需要考虑当多个线程同时访问同<code>一个内存空间</code>时出现的问题</p>
+<p> <code>如果不加以控制，可能会导致数据出错</code></p>
+<p>   我们一般称这种问题为多线程并发问题，<code>指多线程对共享数据的并发访问和操作</code>。</p>
+<p>  而一般解决该问题的方式，就是通过c#中的lock关键字进行加锁。我们需要考虑我们的单例模式对象门是否需要加锁(lock)。</p>
+<p>lock原理：<code>保证在任何时刻只有一个线程能够被执行被锁保护的代码块</code>从而防止多个线程同时访问或修改共享资源，确保线程安全。</p>
+<hr>
+<h4 id="解决多线程并发带来的问题"><a href="#解决多线程并发带来的问题" class="headerlink" title="解决多线程并发带来的问题"></a>解决多线程并发带来的问题</h4><h5 id="1-不继承MonoBehaviour的单例模式"><a href="#1-不继承MonoBehaviour的单例模式" class="headerlink" title="(1) 不继承MonoBehaviour的单例模式"></a>(1) 不继承MonoBehaviour的单例模式</h5><p>​		<code>建议加锁</code>，避免以后使用多线程时出现并发问题。比如：处理网络通讯模块、复杂算法模块时，经常会进行多线程并发处理。</p>
+<p>​		如果子类数据想加锁的话，直接在方法里面lock()就行。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//用于加锁的对象</span></span><br><span class="line">   <span class="keyword">protected</span> <span class="keyword">static</span> <span class="keyword">readonly</span> <span class="built_in">object</span> lockObj = <span class="keyword">new</span> <span class="built_in">object</span>();<span class="comment">//其基本含义是指某一项数据或属性在初始化后,便不可再被修改</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> T Instance</span><br><span class="line">   &#123;</span><br><span class="line">       <span class="keyword">get</span></span><br><span class="line">       &#123;</span><br><span class="line">           <span class="keyword">if</span>(instance==<span class="literal">null</span>)<span class="comment">//如果开始进来等于空直接返回，避免加锁，影响性能</span></span><br><span class="line">           &#123;</span><br><span class="line">               <span class="comment">//，在多线程中，使用lock后，能使该代码块按照指定的顺序执行，被lock这块代码已经被其中一个线程访问了，那么另外一个线程只能等待。</span></span><br><span class="line">               <span class="keyword">lock</span> (lockObj)</span><br><span class="line">               &#123;</span><br><span class="line">                   <span class="keyword">if</span> (instance == <span class="literal">null</span>)</span><br><span class="line">                   &#123;</span><br><span class="line">                       <span class="comment">//instance=new T ();</span></span><br><span class="line">                       <span class="comment">//利用反射得到私有的无参构造函数，用于对象的实例化</span></span><br><span class="line">                       Type type = <span class="keyword">typeof</span>(T);</span><br><span class="line">                       ConstructorInfo info = <span class="keyword">typeof</span>(T).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, <span class="literal">null</span>, Type.EmptyTypes, <span class="literal">null</span>);</span><br><span class="line">                       <span class="keyword">if</span> (info != <span class="literal">null</span>)</span><br><span class="line">                           instance = info.Invoke(<span class="literal">null</span>) <span class="keyword">as</span> T;</span><br><span class="line">                       <span class="keyword">else</span></span><br><span class="line">                           Debug.Log(<span class="string">&quot;没有获得对应的无参构造函数&quot;</span>);</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line"></span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">return</span> instance;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-继承MonoBehaviour的单例模式"><a href="#2-继承MonoBehaviour的单例模式" class="headerlink" title="(2) 继承MonoBehaviour的单例模式"></a>(2) 继承MonoBehaviour的单例模式</h5><p>​	<code>可加可不加，但是建议不加</code></p>
+<p>因为Unity的机制是，Unity主线程中处理的一些对象(如GameObject、Transform等等)是不允许被其他多线程修改访问的，会直接报错。 因此我们一般不会通过多线程去访问继承Mono的相关对象。既然如此，就不会发生多线程并发问题。</p>
+</blockquote>
+<hr>
+<hr>
+<hr>
+<h2 id="二-公共Mono模块"><a href="#二-公共Mono模块" class="headerlink" title="二. 公共Mono模块"></a>二. 公共Mono模块</h2><h3 id="1-公共Mono模块主要作用和基本原理"><a href="#1-公共Mono模块主要作用和基本原理" class="headerlink" title="1. 公共Mono模块主要作用和基本原理"></a>1. 公共Mono模块主要作用和基本原理</h3><p>知识点：<code>委托，声明周期函数，协同</code></p>
+<ul>
+<li><p>主要作用</p>
+<p>   Unity游戏开发当中，继承MonoBehaviour的类，可以使用生命周期函数，可以开启协同程序。</p>
+<pre><code>我们可以利用生命周期函数中的`Update、FixedUpdate、LateUpdate`等函数，进行帧更新或定时更新，用来处理游戏逻辑。
+
+可以利用`协同程序分时分步`的处理游戏逻辑，比如异步加载，复杂逻辑分步等。
+</code></pre>
+<p>  ​    但是对于<code>没有继承Monobehaviour的脚本</code>，我们无法使用这些内容来处理逻辑。在不进行任何处理的情况下，我们<code>无法</code>在不继承MonoBehaviour的脚本中<code>进行帧更新或者定时更新逻辑</code>，也<code>无法利用协同程序分时分布执行逻辑</code>。</p>
+</li>
+<li><p>因此<code>公共Mono模块的主要作用</code>是：</p>
+</li>
+</ul>
+<p>​	让不继承MonoBehaviour的脚本也能：</p>
+<p>​		(1) <code>利用帧更新或定时更新处理逻辑</code></p>
+<p>​		(2) <code>利用协同程序处理逻辑</code></p>
+<p>除了刚才提到的主要作用</p>
+<p>​	由于Unity当中<code>过多脚本中的过多帧更新或定时更新函数会对性能有一定的影响</code>。在满足主要作用的同时，我们还可以<code>对它们进行集中化管理</code>，减少Unity中多脚本中帧更新或定时更新函数的数量，从而来提升一定的性能。</p>
+<ul>
+<li><p>基本原理</p>
+<p>  实现一个继承<code>继承MonoBehaviour单例模式基类的公共Mono管理器脚</code>本在其中</p>
+<p>  (1) <code>通过事件或委托 管理 不继承MonoBehaviour脚本的相关更新函数</code></p>
+<p>  (2) <code>提供协同程序开启或关闭的方法</code></p>
+<p>  从而让不继承Mono的脚本也能</p>
+<p>  (1) <code>利用帧更新或定时更新处理逻辑</code></p>
+<p>  (2) <code>利用协同程序处理逻辑</code></p>
+</li>
+</ul>
+<p>​	   (3) <code>可以统一执行管理帧更新或定时更新相关逻辑</code></p>
+<h3 id="2-实现公共Mono模块"><a href="#2-实现公共Mono模块" class="headerlink" title="2. 实现公共Mono模块"></a>2. 实现公共Mono模块</h3><blockquote>
+<p>（1）创建MonoMgr继承  自动挂载式的继承Mono的单例模式基类。</p>
+<p>​	(2) 实现Update、FixUpdate、LateUpdate生命周期函数。</p>
+<p>​	(3) 声明对应事件或委托用于存储外部函数，并提供添加移除方法，从而达到不继承Mono的脚本可以执行帧更新或定时更新的目的。</p>
+<p>​	(4) 声明协同程序开启关闭函数，从而达到不继承Mono也能执行协同程序</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line">&gt;<span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">&gt;<span class="comment"><span class="doctag">///</span> 公共Mono管理器，不需要挂载直接用</span></span><br><span class="line">&gt;<span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">&gt;<span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MonoMgr</span> : <span class="title">SingleAutoMono</span>&lt;<span class="title">MonoMgr</span>&gt;</span><br><span class="line">&gt;&#123;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">event</span> UnityAction updateEvent;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">event</span> UnityAction fixedUpdateEvent;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">event</span> UnityAction lateUpdateEvent;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   <span class="comment">// Update is called once per frame</span></span><br><span class="line">   <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">   &#123;</span><br><span class="line">       updateEvent?.Invoke();<span class="comment">//如果updateEvent为空就不会调用</span></span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">FixedUpdate</span>()<span class="comment">//定时物理更新</span></span></span><br><span class="line">   &#123;</span><br><span class="line">       fixedUpdateEvent?.Invoke();</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">LateUpdate</span>()<span class="comment">//晚于Update的帧更新</span></span></span><br><span class="line">   &#123;</span><br><span class="line">       lateUpdateEvent?.Invoke();</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//-------------------------------------------------------------------------------------------------------------------------------------------</span></span><br><span class="line"></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> 添加Update帧更新监听函数</span></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;updateFun&quot;&gt;</span>需要更新的方法名<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addUpdateListener</span>(<span class="params">UnityAction updateFun</span>)</span></span><br><span class="line">   &#123;</span><br><span class="line">       updateEvent += updateFun;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> 添加FixUpdate帧更新监听函数</span></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;updateFun&quot;&gt;</span>需要更新的方法名<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addFixedUpdateListener</span>(<span class="params">UnityAction updateFun</span>)</span></span><br><span class="line">   &#123;</span><br><span class="line">       fixedUpdateEvent += updateFun;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> 添加LateUpdate帧更新监听函数</span></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;updateFun&quot;&gt;</span>需要更新的方法名<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addLateUpdateListener</span>(<span class="params">UnityAction updateFun</span>)</span></span><br><span class="line">   &#123;</span><br><span class="line">       lateUpdateEvent += updateFun;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//----------------------------------------------------------------------------------------------------------------------------------------------------------------</span></span><br><span class="line"></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> 移除Update帧更新监听函数</span></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;updateFun&quot;&gt;</span>需要更新的方法名<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">RemoveUpdateListener</span>(<span class="params">UnityAction updateFun</span>)</span></span><br><span class="line">   &#123;</span><br><span class="line">       updateEvent -= updateFun;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> 移除FixUpdate帧更新监听函数</span></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;updateFun&quot;&gt;</span>需要更新的方法名<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">RemoveFixedUpdateListener</span>(<span class="params">UnityAction updateFun</span>)</span></span><br><span class="line">   &#123;</span><br><span class="line">       fixedUpdateEvent -= updateFun;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> 移除LateUpdate帧更新监听函数</span></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">   <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;updateFun&quot;&gt;</span>需要更新的方法名<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">RemoveLateUpdateListener</span>(<span class="params">UnityAction updateFun</span>)</span></span><br><span class="line">   &#123;</span><br><span class="line">       lateUpdateEvent -= updateFun;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//------------------------------------------------------------------------------------------------------------------------</span></span><br><span class="line">   <span class="comment">//协程直接调这个脚本直接启用就行了,注：启用协同必须要用函数名，字符串只能在mono的脚本中才能找到</span></span><br><span class="line">   <span class="comment">//可以统一全用这个脚本进行帧更新，统一管理</span></span><br><span class="line">&gt;&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>测试代码</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public class Test4 : BaseManager&lt;Test4&gt;</span><br><span class="line">&#123;</span><br><span class="line">    private Test4() &#123; &#125;</span><br><span class="line">    public void StartUpdate()</span><br><span class="line">    &#123;</span><br><span class="line">										</span><br><span class="line">        MonoMgr.Instance.addUpdateListener(MyUpdate);</span><br><span class="line">										</span><br><span class="line">    &#125;</span><br><span class="line">    public void StopUpdate()</span><br><span class="line">    &#123;</span><br><span class="line">        MonoMgr.Instance.RemoveUpdateListener(MyUpdate);</span><br><span class="line">    &#125;</span><br><span class="line">    private void MyUpdate()</span><br><span class="line">    &#123;</span><br><span class="line">										</span><br><span class="line">        Debug.Log(666);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public class Main : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    // Start is called before the first frame update</span><br><span class="line">    void Start()</span><br><span class="line">    &#123;</span><br><span class="line">        Test4.Instance.StartUpdate();//</span><br><span class="line">    &#125;</span><br><span class="line">										</span><br><span class="line">    // Update is called once per frame</span><br><span class="line">    void Update()</span><br><span class="line">    &#123;</span><br><span class="line">        if (Input.GetKeyDown(KeyCode.Space))</span><br><span class="line">        &#123;</span><br><span class="line">            Test4.Instance.StartUpdate();//注这里 可能会被重复添加</span><br><span class="line">        &#125;</span><br><span class="line">        if (Input.GetKeyUp(KeyCode.Space))</span><br><span class="line">        &#123;</span><br><span class="line">            Test4.Instance.StopUpdate();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">										</span><br></pre></td></tr></table></figure>
+
+<hr>
+</blockquote>
+<h2 id="三-缓存池-对象池-模块"><a href="#三-缓存池-对象池-模块" class="headerlink" title="三. 缓存池(对象池)模块"></a>三. 缓存池(对象池)模块</h2><blockquote>
+<ul>
+<li>知识点：</li>
+</ul>
+<p><code>C#GC机制，C#数据结构，UnityGameObject，Resources(GC补)</code></p>
+<ul>
+<li><p>抛出问题</p>
+</li>
+<li><p>对象的频繁创建</p>
+<p>  <code>频繁的实例化对象会带来一定的性能开销</code></p>
+</li>
+<li><p>对象的频繁销毁</p>
+<p>  <code>对象的频繁销毁会造成大量的内存垃圾，会造成GC(垃圾回收)的频繁触发。GC的触发，内存的释放，可能会带来卡顿感，影响玩家体验。</code></p>
+</li>
+<li><p>缓存池主要作用</p>
+</li>
+</ul>
+<p>优化资源管理，提高程序性能。</p>
+<p>  主要<code>通过重复利用已经创建的对象，避免频繁的创建和销毁过程</code>，从而<code>减少系统的内存分配和垃圾回收带来的开销</code>。</p>
+<ul>
+<li>目标：</li>
+</ul>
+<p>通过<code>重复利用已经创建的对象，避免频繁的创建和销毁过程</code></p>
+<ul>
+<li>思路：</li>
+</ul>
+<p>用一个柜子中的各种抽屉来装东西，<code>用时去拿(没有就创造，存在就获取)，不用就还（将东西分门别类的放入抽屉中）。</code></p>
+<p><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/TyporaTyporaimage-20250215190352816.png" alt="image-20250215190352816"></p>
+</blockquote>
+<h3 id="缓存池具体实现"><a href="#缓存池具体实现" class="headerlink" title="缓存池具体实现"></a>缓存池具体实现</h3><blockquote>
+<p> (1) 创建PoolMgr继承  不继承MonoBehaviour的单例模式基类。</p>
+<p> (2). 声明柜子(Dictionary)和抽屉(List、Stack、Queue等)容器</p>
+<p> (3). 拿东西方法</p>
+<p>​		有抽屉并且抽屉里有东西 直接获取</p>
+<p>​		没有抽屉或者抽屉里没有东西 创造</p>
+<p> (4). 放东西方法</p>
+<p>​		有抽屉 直接放</p>
+<p>​		没抽屉  创建抽屉，再放</p>
+<p>(5). 清空柜子方法</p>
+<p>​		我们在切场景时，对象都会被移除，这时应该清空柜子，否则会出现内存泄漏，并且下次取东西会出问题。</p>
+</blockquote>
+<h3 id="1-缓存池-对象池-优化-窗口布局优化"><a href="#1-缓存池-对象池-优化-窗口布局优化" class="headerlink" title="1.[缓存池(对象池)优化] 窗口布局优化"></a>1.[缓存池(对象池)优化] 窗口布局优化</h3><blockquote>
+<ul>
+<li><p>窗口布局优化指的是什么</p>
+<pre><code>现在直接失活对象，当之后项目做大了，抽屉多了，对象多了。
+
+游戏中成百上千个对象，在开发测试时不方便从Hierarchy窗口中查看对象获取信息。
+
+因此我们希望能优化一下Hierarchy窗口中的布局，将对象和抽屉的关系可视化
+</code></pre>
+</li>
+</ul>
+<hr>
+<ul>
+<li>制作思路和具体实现</li>
+</ul>
+<p>(1) 柜子管理自己的柜子根物体</p>
+<p>(2) 抽屉管理自己的抽屉根物体</p>
+<p>(3) 失活时建立父子关系，激活时断开父子关系。</p>
+<hr>
+<ul>
+<li>具体实现：</li>
+</ul>
+<p>(1) 先实现将所有对象放入柜子根物体中。</p>
+<p>(2) 再实现将对象放入对应的抽屉根物体中</p>
+<p>​	用面向对象的思想将抽屉相关数据行为封装起来。</p>
+<ul>
+<li><p>将其变为可控制开启的功能</p>
+<p>  这样可以避免在真机运行时，由于父子关系的频繁变换，带来一些额外的性能开销。</p>
+<hr>
+</li>
+</ul>
+</blockquote>
+<h3 id="2-对象上限优化"><a href="#2-对象上限优化" class="headerlink" title="2.对象上限优化"></a>2.对象上限优化</h3><blockquote>
+<ul>
+<li>对象池上限优化指的是什么？</li>
+</ul>
+<p>目前我们制作的缓存池模块，理论上来说，当动态创建的对象长时间不放回抽屉，每次从缓存池中动态获取对象时，会不停的新建对象。那么对象的数量是没有上限的，场景上的<code>某种对象可以存在n个。</code></p>
+<ul>
+<li>我们希望控制对象数量有上限，对于不重要的资源我们没必要让其无限加量。而是将<code>使用最久的资源直接抢来用</code>。</li>
+<li>主要目的：<ul>
+<li>更加彻底的复用资源，对对象的数量上限加以限制，可以优化内存空间，甚至优化性能(<code>减少数量上限，可以减少渲染压力)</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li><p>制作思路</p>
+</li>
+<li><p>(1) 在抽屉里声明一个容器用来记录正在使用的资源.</p>
+</li>
+<li><p>(2) 每次获取对象时，传入一个抽屉最大容量值<code>(可以给一个默认值)</code></p>
+</li>
+<li><p>(3) 从缓存池中获取对象时就需要创建抽屉，用于记录当前使用着的对象</p>
+</li>
+<li><p>(4) 每次取对象时应该分情况</p>
+<ul>
+<li>①没有抽屉</li>
+<li>② 有抽屉，并且抽屉里有没用的对象或者使用中对象超过上限。</li>
+<li>③ 有抽屉，但是抽屉里没有对象，使用中对象也没有超过上限时</li>
+</ul>
+</li>
+<li><p>每次放回对象时：</p>
+<p>  由于记录了正在使用的资源，因此每次放入抽屉时还需要从记录容器中移除对象</p>
+</li>
+<li><p>复用一定要初始化</p>
+</li>
+</ul>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://wqxblog.top">wqx</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://wqxblog.top/Unity/%E5%B0%8F%E6%A1%86%E6%9E%B6/%E3%80%8A%E5%94%90%E8%80%81%E5%B8%88%E5%9F%BA%E7%A1%80%E5%B0%8F%E6%A1%86%E6%9E%B6%E8%A7%A3%E6%9E%90%E4%B8%8E%E4%BB%A3%E7%A0%81%E3%80%8B/">http://wqxblog.top/Unity/%E5%B0%8F%E6%A1%86%E6%9E%B6/%E3%80%8A%E5%94%90%E8%80%81%E5%B8%88%E5%9F%BA%E7%A1%80%E5%B0%8F%E6%A1%86%E6%9E%B6%E8%A7%A3%E6%9E%90%E4%B8%8E%E4%BB%A3%E7%A0%81%E3%80%8B/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://wqxblog.top" target="_blank">游戏开发笔记</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%A1%86%E6%9E%B6/">框架</a></div><div class="post-share"><div class="social-share" data-image="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/C-%E8%BF%9B%E9%98%B6/%E5%85%AB%E8%82%A1%E6%96%87/Csharp%E8%BF%9B%E9%98%B6%E4%B9%8B%E7%9F%A5%E8%AF%86%E7%82%B9%E6%8B%93%E5%B1%95/" title="C#进阶之知识点拓展"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">C#进阶之知识点拓展</div></div><div class="info-2"><div class="info-item-1">C#进阶之知识点拓展一、.Net相关知识1.  微软的.Net  微软的.Net既不是编程语言也不是框架 你可以简单为.Net本质上就是微软为自己的一系列产品取的一个代号。 包含的内容： 框架体系：.Net Framework、.Net  Core、Mono等等。 开发语言：C#,VB,F#等等(C#是.Net平台主推的开发语言) 开发工具：Visual  Studio、Visual  Studio  Code等等。      2.微软做.Net平台的目的  (1). 跨语言  只要是面向.NET平台的编程语言(C#,VB,C++,F#等等)，用其中一种语言编写的内容可以无缝地用在另一种语言编写的应用程序中。     (2). 跨平台  一次编译，不需要任何代码修改，应用程序就可以运行在任意有.NET框架实现的操作系统上，即代码不依赖于操作系统，也不依赖硬件环境。      3.如何实现的跨语言？(1). CLS（Common Language ...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">wqx</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">-只用于学习如有版权问题请联系我 484807196@qq.com</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%8A%E5%94%90%E8%80%81%E5%B8%88%E5%9F%BA%E7%A1%80%E5%B0%8F%E6%A1%86%E6%9E%B6%E8%A7%A3%E6%9E%90%E4%B8%8E%E4%BB%A3%E7%A0%81%E3%80%8B"><span class="toc-number">1.</span> <span class="toc-text">《唐老师基础小框架解析与代码》</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%9F%BA%E7%B1%BB"><span class="toc-number">1.1.</span> <span class="toc-text">一.单例模式基类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%B8%8D%E7%BB%A7%E6%89%BFMonoBehaviour%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%9F%BA%E7%B1%BB"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.不继承MonoBehaviour的单例模式基类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%86%99%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%9F%BA%E7%B1%BB"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">(1).为什么要写单例模式基类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E4%B8%8D%E7%BB%A7%E6%89%BFMonoBehaviour%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%9F%BA%E7%B1%BB%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">(2).不继承MonoBehaviour的单例模式基类的实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%BD%9C%E5%9C%A8%E7%9A%84%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98"><span class="toc-number">1.1.1.3.</span> <span class="toc-text">(3).潜在的安全问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E7%9A%84%E4%BC%98%E7%82%B9"><span class="toc-number">1.1.1.4.</span> <span class="toc-text">(4).单例模式的优点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%BB%A7%E6%89%BFMonoBehaviour%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%9F%BA%E7%B1%BB"><span class="toc-number">1.1.2.</span> <span class="toc-text">2.继承MonoBehaviour的单例模式基类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">(1) 注意事项</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%AE%9E%E7%8E%B0%E6%8C%82%E8%BD%BD%E5%BC%8F%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%9F%BA%E7%B1%BB"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">(2) 实现挂载式的单例模式基类</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E6%8C%82%E8%BD%BD%E5%BC%8F%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%9F%BA%E7%B1%BB"><span class="toc-number">1.1.3.</span> <span class="toc-text">3.实现自动挂载式的单例模式基类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%BD%9C%E5%9C%A8%E7%9A%84%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98"><span class="toc-number">1.1.4.</span> <span class="toc-text">4.潜在的安全问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98-%E5%8F%8D%E5%B0%84%EF%BC%8C%E6%8A%BD%E8%B1%A1%E7%B1%BB"><span class="toc-number">1.1.5.</span> <span class="toc-text">5.安全问题(反射，抽象类)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98-%E5%94%AF%E4%B8%80%E6%80%A7%E9%97%AE%E9%A2%98%E2%80%94%E9%87%8D%E5%A4%8D%E6%8C%82%E8%BD%BD"><span class="toc-number">1.1.6.</span> <span class="toc-text">6. [安全问题]唯一性问题—重复挂载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98-%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E2%80%94%E6%98%AF%E5%90%A6%E5%8A%A0%E9%94%81"><span class="toc-number">1.1.7.</span> <span class="toc-text">7. [安全问题] 线程安全—是否加锁</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E5%B8%A6%E6%9D%A5%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.1.7.1.</span> <span class="toc-text">解决多线程并发带来的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-%E4%B8%8D%E7%BB%A7%E6%89%BFMonoBehaviour%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.1.7.1.1.</span> <span class="toc-text">(1) 不继承MonoBehaviour的单例模式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-%E7%BB%A7%E6%89%BFMonoBehaviour%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.1.7.1.2.</span> <span class="toc-text">(2) 继承MonoBehaviour的单例模式</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C-%E5%85%AC%E5%85%B1Mono%E6%A8%A1%E5%9D%97"><span class="toc-number">1.2.</span> <span class="toc-text">二. 公共Mono模块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%85%AC%E5%85%B1Mono%E6%A8%A1%E5%9D%97%E4%B8%BB%E8%A6%81%E4%BD%9C%E7%94%A8%E5%92%8C%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 公共Mono模块主要作用和基本原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%AE%9E%E7%8E%B0%E5%85%AC%E5%85%B1Mono%E6%A8%A1%E5%9D%97"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. 实现公共Mono模块</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89-%E7%BC%93%E5%AD%98%E6%B1%A0-%E5%AF%B9%E8%B1%A1%E6%B1%A0-%E6%A8%A1%E5%9D%97"><span class="toc-number">1.3.</span> <span class="toc-text">三. 缓存池(对象池)模块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E6%B1%A0%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.3.1.</span> <span class="toc-text">缓存池具体实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%BC%93%E5%AD%98%E6%B1%A0-%E5%AF%B9%E8%B1%A1%E6%B1%A0-%E4%BC%98%E5%8C%96-%E7%AA%97%E5%8F%A3%E5%B8%83%E5%B1%80%E4%BC%98%E5%8C%96"><span class="toc-number">1.3.2.</span> <span class="toc-text">1.[缓存池(对象池)优化] 窗口布局优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%AF%B9%E8%B1%A1%E4%B8%8A%E9%99%90%E4%BC%98%E5%8C%96"><span class="toc-number">1.3.3.</span> <span class="toc-text">2.对象上限优化</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Unity/%E5%B0%8F%E6%A1%86%E6%9E%B6/%E3%80%8A%E5%94%90%E8%80%81%E5%B8%88%E5%9F%BA%E7%A1%80%E5%B0%8F%E6%A1%86%E6%9E%B6%E8%A7%A3%E6%9E%90%E4%B8%8E%E4%BB%A3%E7%A0%81%E3%80%8B/" title="Unity小框架">Unity小框架</a><time datetime="2025-04-15T11:54:13.381Z" title="发表于 2025-04-15 19:54:13">2025-04-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/C-%E8%BF%9B%E9%98%B6/%E5%85%AB%E8%82%A1%E6%96%87/Csharp%E8%BF%9B%E9%98%B6%E4%B9%8B%E7%9F%A5%E8%AF%86%E7%82%B9%E6%8B%93%E5%B1%95/" title="C#进阶之知识点拓展">C#进阶之知识点拓展</a><time datetime="2025-04-14T11:32:53.100Z" title="发表于 2025-04-14 19:32:53">2025-04-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Unity/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/Unity%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" title="Unity性能优化">Unity性能优化</a><time datetime="2025-04-14T11:08:10.016Z" title="发表于 2025-04-14 19:08:10">2025-04-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/uncategorized/hello-world/" title="Hello World">Hello World</a><time datetime="2025-04-14T07:48:41.942Z" title="发表于 2025-04-14 15:48:41">2025-04-14</time></div></div></div></div></div></div></main><footer id="footer" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 40%,#34495e 60%,#2980b9 80%,#1a1a1a 100%);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By wqx</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
