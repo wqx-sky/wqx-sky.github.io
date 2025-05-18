@@ -1,13 +1,13 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>渲染管线基础 | 游戏开发笔记</title><meta name="author" content="wqx"><meta name="copyright" content="wqx"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="该内容基于Games101课程，内容可能有些杂乱，后续会详细整理  渲染管线基础 所谓渲染就是把三维空间的物体变成一张图   一、线性代数入门1.向量（Vectors） 向量最重要的两个属性：方向和大小     单位向量：向量本身&#x2F;长度   得到和原始向量同方向长度为1的向量    向量求和     笛卡尔坐标系描述向量，默认向量一个一个往下写(列向量)     向量点乘  为 a长度">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>渲染管线基础 | 游戏开发笔记</title><meta name="author" content="wqx"><meta name="copyright" content="wqx"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="该内容基于Games101课程，内容可能有些杂乱，后续会详细整理。建议学习shader之前要看过一遍101  渲染管线基础 所谓渲染就是把三维空间的物体变成一张图       具体绘制流程如下：  模型空间变换到世界空间 世界空间变换到观察空间 观察空间变换到屏幕空间 拿到屏幕空间对应映射的位置后，进行光栅化绘制像素     一、线性代数入门1.向量（Vectors） 向量最重要的两个属性：方向">
 <meta property="og:type" content="article">
 <meta property="og:title" content="渲染管线基础">
 <meta property="og:url" content="http://wqxblog.top/%E6%B8%B2%E6%9F%93/%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF%E5%9F%BA%E7%A1%80/index.html">
 <meta property="og:site_name" content="游戏开发笔记">
-<meta property="og:description" content="该内容基于Games101课程，内容可能有些杂乱，后续会详细整理  渲染管线基础 所谓渲染就是把三维空间的物体变成一张图   一、线性代数入门1.向量（Vectors） 向量最重要的两个属性：方向和大小     单位向量：向量本身&#x2F;长度   得到和原始向量同方向长度为1的向量    向量求和     笛卡尔坐标系描述向量，默认向量一个一个往下写(列向量)     向量点乘  为 a长度">
+<meta property="og:description" content="该内容基于Games101课程，内容可能有些杂乱，后续会详细整理。建议学习shader之前要看过一遍101  渲染管线基础 所谓渲染就是把三维空间的物体变成一张图       具体绘制流程如下：  模型空间变换到世界空间 世界空间变换到观察空间 观察空间变换到屏幕空间 拿到屏幕空间对应映射的位置后，进行光栅化绘制像素     一、线性代数入门1.向量（Vectors） 向量最重要的两个属性：方向">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg">
 <meta property="article:published_time" content="2025-05-08T04:29:02.431Z">
-<meta property="article:modified_time" content="2025-05-13T11:03:25.352Z">
+<meta property="article:modified_time" content="2025-05-18T07:48:34.286Z">
 <meta property="article:author" content="wqx">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg"><script type="application/ld+json">{
@@ -17,7 +17,7 @@
   "url": "http://wqxblog.top/%E6%B8%B2%E6%9F%93/%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF%E5%9F%BA%E7%A1%80/",
   "image": "https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg",
   "datePublished": "2025-05-08T04:29:02.431Z",
-  "dateModified": "2025-05-13T11:03:25.352Z",
+  "dateModified": "2025-05-18T07:48:34.286Z",
   "author": [
     {
       "@type": "Person",
@@ -158,13 +158,27 @@
   isHighlightShrink: false,
   isToc: true,
   pageType: 'post'
-}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 25%,#34495e 45%,#2980b9 80%,#1a1a1a 100%);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 40%,#34495e 60%,#2980b9 80%,#1a1a1a 100%);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">游戏开发笔记</span></a><a class="nav-page-title" href="/"><span class="site-name">渲染管线基础</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">渲染管线基础</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-05-08T04:29:02.431Z" title="发表于 2025-05-08 12:29:02">2025-05-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-13T11:03:25.352Z" title="更新于 2025-05-13 19:03:25">2025-05-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B8%B2%E6%9F%93/">渲染</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
-<p>该内容基于Games101课程，内容可能有些杂乱，后续会详细整理</p>
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 25%,#34495e 45%,#2980b9 80%,#1a1a1a 100%);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 40%,#34495e 60%,#2980b9 80%,#1a1a1a 100%);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">游戏开发笔记</span></a><a class="nav-page-title" href="/"><span class="site-name">渲染管线基础</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">渲染管线基础</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-05-08T04:29:02.431Z" title="发表于 2025-05-08 12:29:02">2025-05-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-18T07:48:34.286Z" title="更新于 2025-05-18 15:48:34">2025-05-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B8%B2%E6%9F%93/">渲染</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>7分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>该内容基于Games101课程，内容可能有些杂乱，后续会详细整理。建议学习shader之前要看过一遍101</p>
 </blockquote>
 <h1 id="渲染管线基础"><a href="#渲染管线基础" class="headerlink" title="渲染管线基础"></a>渲染管线基础</h1><blockquote>
 <p>所谓渲染就是把三维空间的物体变成一张图</p>
 </blockquote>
-<p><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250508123516010.png" alt="image-20250508123516010"></p>
+<img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250508123516010.png" alt="image-20250508123516010" style="zoom:50%;" />
+
+
+
+<blockquote>
+<p>具体绘制流程如下：</p>
+<ul>
+<li><code>模型空间变换到世界空间</code></li>
+<li><code>世界空间变换到观察空间</code></li>
+<li><code>观察空间变换到屏幕空间</code></li>
+<li><code>拿到屏幕空间对应映射的位置后，进行光栅化绘制像素</code></li>
+</ul>
+</blockquote>
+<img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518152728613.png" alt="image-20250518152728613" style="zoom:50%;" />
+
 <h2 id="一、线性代数入门"><a href="#一、线性代数入门" class="headerlink" title="一、线性代数入门"></a>一、线性代数入门</h2><h3 id="1-向量（Vectors）"><a href="#1-向量（Vectors）" class="headerlink" title="1.向量（Vectors）"></a>1.向量（Vectors）</h3><blockquote>
 <p>向量最重要的两个属性：方向和大小</p>
 </blockquote>
@@ -338,13 +352,172 @@
 
 <blockquote>
 <p>一般性的旋转如何处理？</p>
-<p>绕任何角度，都可以写成绕xyz轴的组合</p>
+<p>绕任何角度，都可以写成绕xyz轴的组合.</p>
+<p>为什么绕y轴那个矩阵的副对角线跟其他的两个不一样？</p>
+<ul>
+<li>答：因为是z叉乘x 得到y，并不是x叉乘z。</li>
+</ul>
 </blockquote>
-<h2 id="一、光栅化"><a href="#一、光栅化" class="headerlink" title="一、光栅化"></a>一、光栅化</h2><blockquote>
-<p>把三维空间的几何形体显示在屏幕上就是光栅化。</p>
+<h2 id="三、视图变换（View-Camera-Transformation）"><a href="#三、视图变换（View-Camera-Transformation）" class="headerlink" title="三、视图变换（View&#x2F;Camera Transformation）"></a>三、视图变换（View&#x2F;Camera Transformation）</h2><h3 id="1-什么是视图变换"><a href="#1-什么是视图变换" class="headerlink" title="1.什么是视图变换"></a>1.什么是视图变换</h3><blockquote>
+<ul>
+<li>找一个好的位置，大家摆好姿势(模型空间变换)</li>
+<li>找一个好的角度去放置摄像机（视图空间变换）</li>
+<li>拍摄（投影变换）</li>
+</ul>
+</blockquote>
+<h3 id="2-如何进行视图变换"><a href="#2-如何进行视图变换" class="headerlink" title="2 .如何进行视图变换"></a>2 .如何进行视图变换</h3><blockquote>
+<ul>
+<li>定义摄像机<img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250517233250769.png" alt="image-20250517233250769" style="zoom:50%;" /></li>
+<li>把相机锁死在（0，0，0）处，把相机放置在标准观察位置上</li>
+<li><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250517233428046.png" alt="image-20250517233428046" style="zoom:50%;" /></li>
+<li>摄像机防止在标准位置上操作</li>
+<li><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250517233621443.png" alt="image-20250517233621443" style="zoom:50%;" /></li>
+</ul>
+</blockquote>
+<h3 id="3-透视投影和正交投影"><a href="#3-透视投影和正交投影" class="headerlink" title="3.透视投影和正交投影"></a>3.透视投影和正交投影</h3><blockquote>
+<p>透视投影：有近大远小的特性。</p>
+<p>正交投影：没有近大远小，所有东西不管远近最后渲染的大小都一样。</p>
+</blockquote>
+<blockquote>
+<img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518094151721.png" alt="image-20250518094151721" style="zoom:50%;" /></blockquote>
+<blockquote>
+<p>正交变换：把远处和进处的物品全都挤到一个平面上</p>
+<ul>
+<li>1.把相机放到远点上，看-z方向</li>
+<li>2.扔掉z轴</li>
+<li>3.就能得到正交变换的图像</li>
+<li>2和3步其实就是把<code>长方形视锥体的xyz坐标范围</code>映射在<code>(-1,1)长宽高为2的正方体</code>中这一步叫做正则</li>
+</ul>
+<img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518094623934.png" alt="image-20250518094623934" style="zoom:50%;" />
+
+<img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518095305461.png" alt="image-20250518095305461" style="zoom:50%;" />
+
+<p>注：因为是沿着-z(要保证左手坐标系)所以<code>近大于远</code></p>
+</blockquote>
+<blockquote>
+<p>透视变换：</p>
+<ul>
+<li><code>将透视视锥体挤成一个长方体</code></li>
+<li><code>近裁剪面上面所有点保持不变</code></li>
+<li><code>远裁剪面上的z值不变和中心点不变</code></li>
+<li><code>远裁剪面宽高映射成近裁剪面宽高</code></li>
+<li>然后再正交投影</li>
+</ul>
+<img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518100214422.png" alt="image-20250518100214422" style="zoom:50%;" />
+
+<ul>
+<li>从一个侧视图看，我们可以看到一个相似三角形，即可得出缩放后y‘的值</li>
+</ul>
+<img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518100411646.png" alt="image-20250518100411646" style="zoom:50%;" />
+
+<ul>
+<li>xy同理，会被映射到如下向量</li>
+</ul>
+<img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518100657062.png" alt="image-20250518100657062" style="zoom:50%;" />
+
+<ul>
+<li>得到一个不完全的变换矩阵</li>
+</ul>
+<p><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518100900353.png" alt="image-20250518100900353"></p>
+<ul>
+<li>因为z与xy无关，所有第三行前两个位置为0。</li>
+<li>带入远平面中心点。</li>
+<li><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518101649206.png" alt="image-20250518101649206" style="zoom:50%;" /></li>
+<li><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518101829270.png" alt="image-20250518101829270" style="zoom:50%;" /></li>
+<li><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518101900065.png" alt="image-20250518101900065" style="zoom:50%;" /></li>
+</ul>
+</blockquote>
+<h2 id="四、屏幕空间变换（这里指的就是视口变换）"><a href="#四、屏幕空间变换（这里指的就是视口变换）" class="headerlink" title="四、屏幕空间变换（这里指的就是视口变换）"></a>四、屏幕空间变换（这里指的就是视口变换）</h2><blockquote>
+<p>就是把视图变换后得到的（-1，1）范围的立方体中的内容，映射为二维屏幕中的屏幕坐标。并得不到图像</p>
+<p>学术上说就是将裁剪空间的坐标映射到屏幕坐标系，确定图像在屏幕上的显示区域。</p>
+<p>如果要得到图像需要把这个阶段得到的数据打散成像素才行<code>这个过程就是光栅化</code>。</p>
+</blockquote>
+<h3 id="1-定义屏幕空间"><a href="#1-定义屏幕空间" class="headerlink" title="1.定义屏幕空间"></a>1.定义屏幕空间</h3><blockquote>
+<img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518103223146.png" alt="image-20250518103223146" style="zoom:50%;" />
+
+<p>注：在unity中左下角像素为(0,0)，右上角像素坐标就是屏幕分辨率</p>
+<ul>
+<li>视口变换：把立方体映射到屏幕坐标上</li>
+</ul>
+<img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518103820088.png" alt="image-20250518103820088" style="zoom: 33%;" />
+
+<ul>
+<li>到这一步仍然还只是一些三角形，一些数据，我们接下来要把这些打散成像素，变成真正的图。</li>
+<li>视口转换只是确定了图像在屏幕上的位置和缩放，真正的图像内容生成还需要后续处理，包括光栅化和着色。</li>
+</ul>
+</blockquote>
+<h2 id="五、光栅化"><a href="#五、光栅化" class="headerlink" title="五、光栅化"></a>五、光栅化</h2><h3 id="1-什么是光栅化"><a href="#1-什么是光栅化" class="headerlink" title="1.什么是光栅化"></a>1.什么是光栅化</h3><blockquote>
+<p>把三维空间的几何形体显示在屏幕上就是光栅化，得到像素。</p>
+<p>我们在屏幕变换中已经得到图像显示在屏幕上的坐标，这一步就是为了把像素画在上面。</p>
 <p>实时：能达到30FPS画面就是实时</p>
 </blockquote>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://wqxblog.top">wqx</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://wqxblog.top/%E6%B8%B2%E6%9F%93/%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF%E5%9F%BA%E7%A1%80/">http://wqxblog.top/%E6%B8%B2%E6%9F%93/%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF%E5%9F%BA%E7%A1%80/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://wqxblog.top" target="_blank">游戏开发笔记</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/Lua/Lua%E8%BF%9B%E9%98%B6/" title="Lua进阶"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Lua进阶</div></div><div class="info-2"><div class="info-item-1">Lua进阶1. ipairs和pairs的区别 使用ipairs遍历时：下标不是数字或者不是递增数字(断了)，遍历就会直接结束 使用pairs遍历时：直接不管什么都能遍历，很可靠。    正常情况下遍历，没有任何区别  12345678910111213141516171819202122local tbl1 = &#123; &quot;apple&quot;, &quot;pear&quot;, &quot;orange&quot;, &quot;grape&quot; &#125;print(&quot;=============ipairs的执行结果=============&quot;)for i, v in ipairs(tbl1) do  print(i, &#x27;=&#x27;, v)endprint(&quot;=============pairs的执行结果==============&quot;)for i, v in pairs(tbl1) do  print(i, &#x27;=&#x27;,...</div></div></div></a><a class="pagination-related" href="/%E6%A1%88%E4%BE%8B/Lily%E5%A5%A5%E5%BE%B7%E8%B5%9B/%E5%AE%9E%E6%88%98%E4%B8%AD%E7%9A%84%E9%97%AE%E9%A2%98/" title="实战中的问题"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">实战中的问题</div></div><div class="info-2"><div class="info-item-1">实战中的问题一、人物为什么没有动画情况下是张开双臂的状态 答案：建模时要绑定骨骼，四肢要明确反映出来，具体到底是头躯干还是腿，默认使用T字模型。   二、速通新InputSystem1.InputSystem是什么 绑定—》按下—》开始、触发、结束三个事件    2.Action参数   3.输入动作设置    4. 相互作用设置     5.值加工设置    6.按键绑定    7.InputAction类使用（1）启用输入检测 委托变量.Enable()；   （2）操作监听 三个基本事件     监听函数 使用CallbackContext获取信息CallbackContext context参数包含了触发动作的所有信息。你可以使用这个上下文来访问更多细节，例如：  context.ReadValue&lt;float&gt;(): 获取输入值（例如，对于键盘按键或手柄按钮）。 context.control: 获取触发该动作的输入控件。 context.interaction: 获取当前交互类型（例如，是否为按下、释放等）。 context.phase:...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">wqx</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">-只用于学习如有版权问题请联系我 484807196@qq.com</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF%E5%9F%BA%E7%A1%80"><span class="toc-number">1.</span> <span class="toc-text">渲染管线基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0%E5%85%A5%E9%97%A8"><span class="toc-number">1.1.</span> <span class="toc-text">一、线性代数入门</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%90%91%E9%87%8F%EF%BC%88Vectors%EF%BC%89"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.向量（Vectors）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%9F%A9%E9%98%B5"><span class="toc-number">1.1.2.</span> <span class="toc-text">2. 矩阵</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%8F%98%E6%8D%A2"><span class="toc-number">1.2.</span> <span class="toc-text">二、变换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%88%91%E4%BB%AC%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%AD%A6%E4%B9%A0%E5%8F%98%E6%8D%A2"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 我们为什么要学习变换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2D%E5%8F%98%E6%8D%A2"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2D变换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2D-Scale%E5%8F%98%E6%8D%A2"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">(1)2D Scale变换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%AF%B9%E7%A7%B0%E6%93%8D%E4%BD%9C"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">(2) 对称操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%883%EF%BC%89%E5%88%87%E5%8F%98-Shear-Matrix"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">（3）切变(Shear Matrix)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%884%EF%BC%89%E6%97%8B%E8%BD%AC%E5%8F%98%E6%8D%A2"><span class="toc-number">1.2.2.4.</span> <span class="toc-text">（4）旋转变换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%885%EF%BC%89%E7%BA%BF%E6%80%A7%E5%8F%98%E6%8D%A2"><span class="toc-number">1.2.2.5.</span> <span class="toc-text">（5）线性变换</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%BD%90%E6%AC%A1%E5%9D%90%E6%A0%87%E5%92%8C%E5%B9%B3%E7%A7%BB%E5%8F%98%E6%8D%A2"><span class="toc-number">1.2.3.</span> <span class="toc-text">3.齐次坐标和平移变换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%A4%8D%E5%90%88%E5%8F%98%E6%8D%A2"><span class="toc-number">1.2.4.</span> <span class="toc-text">4.复合变换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%8F%98%E6%8D%A2%E5%88%86%E8%A7%A3"><span class="toc-number">1.2.5.</span> <span class="toc-text">5.变换分解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3D%E5%8F%98%E6%8D%A2"><span class="toc-number">1.2.6.</span> <span class="toc-text">6.3D变换</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%85%89%E6%A0%85%E5%8C%96"><span class="toc-number">1.3.</span> <span class="toc-text">一、光栅化</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E6%A1%88%E4%BE%8B/Lily%E5%A5%A5%E5%BE%B7%E8%B5%9B/%E5%AE%9E%E6%88%98%E4%B8%AD%E7%9A%84%E9%97%AE%E9%A2%98/" title="实战中的问题">实战中的问题</a><time datetime="2025-05-13T11:23:16.069Z" title="发表于 2025-05-13 19:23:16">2025-05-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E6%B8%B2%E6%9F%93/%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF%E5%9F%BA%E7%A1%80/" title="渲染管线基础">渲染管线基础</a><time datetime="2025-05-08T04:29:02.431Z" title="发表于 2025-05-08 12:29:02">2025-05-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Lua/Lua%E8%BF%9B%E9%98%B6/" title="Lua进阶">Lua进阶</a><time datetime="2025-05-07T06:29:34.265Z" title="发表于 2025-05-07 14:29:34">2025-05-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Lua/Lua%E5%9F%BA%E7%A1%80/" title="Lua基础">Lua基础</a><time datetime="2025-05-04T11:59:04.262Z" title="发表于 2025-05-04 19:59:04">2025-05-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E7%AE%97%E6%B3%95/%E9%AB%98%E9%A2%91%E7%AE%97%E6%B3%95/" title="高频算法30讲">高频算法30讲</a><time datetime="2025-05-02T06:16:35.789Z" title="发表于 2025-05-02 14:16:35">2025-05-02</time></div></div></div></div></div></div></main><footer id="footer" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 40%,#34495e 60%,#2980b9 80%,#1a1a1a 100%);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By wqx</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+<blockquote>
+<ul>
+<li>经过MVP变换后拿到屏幕上的视口坐标，现在做的就是把坐标围成的三角形变成像素</li>
+<li><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518141157639.png" alt="image-20250518141157639" style="zoom:50%;" /></li>
+<li>这里通过采样去处理。采样就是：函数离散化，把一个连续的轴拆成一个一个。我们利用像素中心对屏幕空间进行采样。</li>
+<li>1.判断像素中心是否在三角形内，如果碰巧在边界，自行设置规则处理即可。</li>
+<li><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518141538997.png" alt="image-20250518141538997" style="zoom:50%;" /></li>
+<li>2.使用包围盒把三个点所围成的最小长方形，只在把包围盒内部进行光栅化处理</li>
+<li><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518142112519.png" alt="image-20250518142112519" style="zoom:50%;" /></li>
+<li>3.我们把包围盒中的像素方块填充完得到如下。这和想得到的三角形不一致，所以我们要抗锯齿(反走样)</li>
+<li><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518142850700.png" alt="image-20250518142850700" style="zoom:50%;" /></li>
+</ul>
+</blockquote>
+<h3 id="2-抗锯齿"><a href="#2-抗锯齿" class="headerlink" title="2.抗锯齿"></a>2.抗锯齿</h3><blockquote>
+<ul>
+<li>为什么会出现锯齿？</li>
+<li>答：屏幕空间采样精度不够。</li>
+</ul>
+</blockquote>
+<p>采样带来的问题：</p>
+<ul>
+<li>锯齿</li>
+<li>摩尔纹</li>
+<li>回答这些现象：信号变化的速度太快了，以至于采样的速率跟不上。</li>
+<li><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518143351399.png" alt="image-20250518143351399" style="zoom: 33%;" /></li>
+</ul>
+<blockquote>
+<ul>
+<li>如何解决抗锯齿？</li>
+<li>答：在对屏幕空间进行采样之前，先对其进行模糊（加滤波）后，再进行采样。这样我们得到一些比较模糊点，我们缩小之后就会有轮廓，不会出现很明显的锯齿。大概了解即可</li>
+<li><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518143833240.png" alt="image-20250518143833240" style="zoom:50%;" /></li>
+</ul>
+</blockquote>
+<h3 id="3-深度测试"><a href="#3-深度测试" class="headerlink" title="3.深度测试"></a>3.深度测试</h3><blockquote>
+<ul>
+<li>当有很多三角形叠在一起，互相遮挡如何解决？？？？</li>
+<li>解决方法：<code>深度缓存/深度缓冲</code></li>
+<li>为什么画家算法不行？？？从远到近画<ul>
+<li>如下图三个互相遮挡，这就没法定义深度关系</li>
+</ul>
+</li>
+<li><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518150922105.png" alt="image-20250518150922105" style="zoom:50%;" /></li>
+</ul>
+</blockquote>
+<h4 id="深度缓存"><a href="#深度缓存" class="headerlink" title="深度缓存"></a>深度缓存</h4><blockquote>
+<p>生成效果图的同时，生成一张深度图。这个图只存像素的最浅的深度信息。</p>
+<p>比如我们那正方体上一个像素点举例：</p>
+<ul>
+<li><p>我们先画后面地板像素，并且深度缓存记录地板像素的深度信息</p>
+</li>
+<li><p>在画正方体，发现正方体会遮挡到。当前的正方体的深度要小于地板的深度，那就要把正方体像素画上去</p>
+<p>  并且要把深度缓存更新为更浅的。</p>
+</li>
+<li><p>流程：</p>
+<ul>
+<li>开始深度缓存都是记录无限远的。</li>
+<li>然后如果光栅化的像素深度比之前的小，就会更新</li>
+</ul>
+</li>
+<li><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518151335447.png" alt="image-20250518151335447" style="zoom:50%;" /></li>
+<li><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250518152046280.png" alt="image-20250518152046280" style="zoom:50%;" /></li>
+</ul>
+</blockquote>
+<h2 id="六、着色（shading）"><a href="#六、着色（shading）" class="headerlink" title="六、着色（shading）"></a>六、着色（shading）</h2><h3 id="1-什么是着色"><a href="#1-什么是着色" class="headerlink" title="1.什么是着色"></a>1.什么是着色</h3><blockquote>
+<p>就是给像素根据<code>光照</code>和<code>明暗</code>添加上<code>不同的颜色和阴影</code></p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://wqxblog.top">wqx</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://wqxblog.top/%E6%B8%B2%E6%9F%93/%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF%E5%9F%BA%E7%A1%80/">http://wqxblog.top/%E6%B8%B2%E6%9F%93/%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF%E5%9F%BA%E7%A1%80/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://wqxblog.top" target="_blank">游戏开发笔记</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/Lua/Lua%E8%BF%9B%E9%98%B6/" title="Lua进阶"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Lua进阶</div></div><div class="info-2"><div class="info-item-1">Lua进阶1. ipairs和pairs的区别 使用ipairs遍历时：下标不是数字或者不是递增数字(断了)，遍历就会直接结束 使用pairs遍历时：直接不管什么都能遍历，很可靠。    正常情况下遍历，没有任何区别  12345678910111213141516171819202122local tbl1 = &#123; &quot;apple&quot;, &quot;pear&quot;, &quot;orange&quot;, &quot;grape&quot; &#125;print(&quot;=============ipairs的执行结果=============&quot;)for i, v in ipairs(tbl1) do  print(i, &#x27;=&#x27;, v)endprint(&quot;=============pairs的执行结果==============&quot;)for i, v in pairs(tbl1) do  print(i, &#x27;=&#x27;,...</div></div></div></a><a class="pagination-related" href="/%E6%A1%88%E4%BE%8B/Lily%E5%A5%A5%E5%BE%B7%E8%B5%9B/%E5%AE%9E%E6%88%98%E4%B8%AD%E7%9A%84%E9%97%AE%E9%A2%98/" title="实战中的问题"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">实战中的问题</div></div><div class="info-2"><div class="info-item-1">实战中的问题一、人物为什么没有动画情况下是张开双臂的状态 答案：建模时要绑定骨骼，四肢要明确反映出来，具体到底是头躯干还是腿，默认使用T字模型。   二、速通新InputSystem1.InputSystem是什么 绑定—》按下—》开始、触发、结束三个事件    2.Action参数   3.输入动作设置    4. 相互作用设置     5.值加工设置    6.按键绑定    7.InputAction类使用（1）启用输入检测 委托变量.Enable()；   （2）操作监听 三个基本事件     监听函数 使用CallbackContext获取信息CallbackContext context参数包含了触发动作的所有信息。你可以使用这个上下文来访问更多细节，例如：  context.ReadValue&lt;float&gt;(): 获取输入值（例如，对于键盘按键或手柄按钮）。 context.control: 获取触发该动作的输入控件。 context.interaction: 获取当前交互类型（例如，是否为按下、释放等）。 context.phase:...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">wqx</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">-只用于学习如有版权问题请联系我 484807196@qq.com</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF%E5%9F%BA%E7%A1%80"><span class="toc-number">1.</span> <span class="toc-text">渲染管线基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0%E5%85%A5%E9%97%A8"><span class="toc-number">1.1.</span> <span class="toc-text">一、线性代数入门</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%90%91%E9%87%8F%EF%BC%88Vectors%EF%BC%89"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.向量（Vectors）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%9F%A9%E9%98%B5"><span class="toc-number">1.1.2.</span> <span class="toc-text">2. 矩阵</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%8F%98%E6%8D%A2"><span class="toc-number">1.2.</span> <span class="toc-text">二、变换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%88%91%E4%BB%AC%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%AD%A6%E4%B9%A0%E5%8F%98%E6%8D%A2"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 我们为什么要学习变换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2D%E5%8F%98%E6%8D%A2"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2D变换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2D-Scale%E5%8F%98%E6%8D%A2"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">(1)2D Scale变换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%AF%B9%E7%A7%B0%E6%93%8D%E4%BD%9C"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">(2) 对称操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%883%EF%BC%89%E5%88%87%E5%8F%98-Shear-Matrix"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">（3）切变(Shear Matrix)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%884%EF%BC%89%E6%97%8B%E8%BD%AC%E5%8F%98%E6%8D%A2"><span class="toc-number">1.2.2.4.</span> <span class="toc-text">（4）旋转变换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%885%EF%BC%89%E7%BA%BF%E6%80%A7%E5%8F%98%E6%8D%A2"><span class="toc-number">1.2.2.5.</span> <span class="toc-text">（5）线性变换</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%BD%90%E6%AC%A1%E5%9D%90%E6%A0%87%E5%92%8C%E5%B9%B3%E7%A7%BB%E5%8F%98%E6%8D%A2"><span class="toc-number">1.2.3.</span> <span class="toc-text">3.齐次坐标和平移变换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%A4%8D%E5%90%88%E5%8F%98%E6%8D%A2"><span class="toc-number">1.2.4.</span> <span class="toc-text">4.复合变换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%8F%98%E6%8D%A2%E5%88%86%E8%A7%A3"><span class="toc-number">1.2.5.</span> <span class="toc-text">5.变换分解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3D%E5%8F%98%E6%8D%A2"><span class="toc-number">1.2.6.</span> <span class="toc-text">6.3D变换</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E8%A7%86%E5%9B%BE%E5%8F%98%E6%8D%A2%EF%BC%88View-Camera-Transformation%EF%BC%89"><span class="toc-number">1.3.</span> <span class="toc-text">三、视图变换（View&#x2F;Camera Transformation）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E8%A7%86%E5%9B%BE%E5%8F%98%E6%8D%A2"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.什么是视图变换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E8%A7%86%E5%9B%BE%E5%8F%98%E6%8D%A2"><span class="toc-number">1.3.2.</span> <span class="toc-text">2 .如何进行视图变换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%80%8F%E8%A7%86%E6%8A%95%E5%BD%B1%E5%92%8C%E6%AD%A3%E4%BA%A4%E6%8A%95%E5%BD%B1"><span class="toc-number">1.3.3.</span> <span class="toc-text">3.透视投影和正交投影</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%B1%8F%E5%B9%95%E7%A9%BA%E9%97%B4%E5%8F%98%E6%8D%A2%EF%BC%88%E8%BF%99%E9%87%8C%E6%8C%87%E7%9A%84%E5%B0%B1%E6%98%AF%E8%A7%86%E5%8F%A3%E5%8F%98%E6%8D%A2%EF%BC%89"><span class="toc-number">1.4.</span> <span class="toc-text">四、屏幕空间变换（这里指的就是视口变换）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%AE%9A%E4%B9%89%E5%B1%8F%E5%B9%95%E7%A9%BA%E9%97%B4"><span class="toc-number">1.4.1.</span> <span class="toc-text">1.定义屏幕空间</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%85%89%E6%A0%85%E5%8C%96"><span class="toc-number">1.5.</span> <span class="toc-text">五、光栅化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%85%89%E6%A0%85%E5%8C%96"><span class="toc-number">1.5.1.</span> <span class="toc-text">1.什么是光栅化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%8A%97%E9%94%AF%E9%BD%BF"><span class="toc-number">1.5.2.</span> <span class="toc-text">2.抗锯齿</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%B7%B1%E5%BA%A6%E6%B5%8B%E8%AF%95"><span class="toc-number">1.5.3.</span> <span class="toc-text">3.深度测试</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B7%B1%E5%BA%A6%E7%BC%93%E5%AD%98"><span class="toc-number">1.5.3.1.</span> <span class="toc-text">深度缓存</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E7%9D%80%E8%89%B2%EF%BC%88shading%EF%BC%89"><span class="toc-number">1.6.</span> <span class="toc-text">六、着色（shading）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E7%9D%80%E8%89%B2"><span class="toc-number">1.6.1.</span> <span class="toc-text">1.什么是着色</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E6%A1%88%E4%BE%8B/Lily%E5%A5%A5%E5%BE%B7%E8%B5%9B/%E5%AE%9E%E6%88%98%E4%B8%AD%E7%9A%84%E9%97%AE%E9%A2%98/" title="实战中的问题">实战中的问题</a><time datetime="2025-05-13T11:23:16.069Z" title="发表于 2025-05-13 19:23:16">2025-05-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E6%B8%B2%E6%9F%93/%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF%E5%9F%BA%E7%A1%80/" title="渲染管线基础">渲染管线基础</a><time datetime="2025-05-08T04:29:02.431Z" title="发表于 2025-05-08 12:29:02">2025-05-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Lua/Lua%E8%BF%9B%E9%98%B6/" title="Lua进阶">Lua进阶</a><time datetime="2025-05-07T06:29:34.265Z" title="发表于 2025-05-07 14:29:34">2025-05-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Lua/Lua%E5%9F%BA%E7%A1%80/" title="Lua基础">Lua基础</a><time datetime="2025-05-04T11:59:04.262Z" title="发表于 2025-05-04 19:59:04">2025-05-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E7%AE%97%E6%B3%95/%E9%AB%98%E9%A2%91%E7%AE%97%E6%B3%95/" title="高频算法30讲">高频算法30讲</a><time datetime="2025-05-02T06:16:35.789Z" title="发表于 2025-05-02 14:16:35">2025-05-02</time></div></div></div></div></div></div></main><footer id="footer" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 40%,#34495e 60%,#2980b9 80%,#1a1a1a 100%);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By wqx</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
   const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
   const option = null
 
