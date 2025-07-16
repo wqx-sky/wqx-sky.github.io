@@ -1,0 +1,359 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Unity网络开发基础（二） | 游戏开发笔记</title><meta name="author" content="wqx"><meta name="copyright" content="wqx"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="内容概况：文件传输FTP，HTTP  一、文件传输FTP1.FTP工作原理（1）FTP是什么？？  FTP文件传输协议，是支持Internet文件传输的各种规则所组成的集合。 这些规则使internet用户可以把文件从一台主机上拷贝到另一台主机上。 除此之外，还提供登录、目录查询以及其他会话控制等功能。 解释： FTP文件协议就是一个在网络中上传下载文件的一套规则。     （2）FTP的工作原">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity网络开发基础（二）">
+<meta property="og:url" content="http://wqxblog.top/%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91/Unity%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%EF%BC%88%E4%BA%8C%EF%BC%89/index.html">
+<meta property="og:site_name" content="游戏开发笔记">
+<meta property="og:description" content="内容概况：文件传输FTP，HTTP  一、文件传输FTP1.FTP工作原理（1）FTP是什么？？  FTP文件传输协议，是支持Internet文件传输的各种规则所组成的集合。 这些规则使internet用户可以把文件从一台主机上拷贝到另一台主机上。 除此之外，还提供登录、目录查询以及其他会话控制等功能。 解释： FTP文件协议就是一个在网络中上传下载文件的一套规则。     （2）FTP的工作原">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg">
+<meta property="article:published_time" content="2025-07-16T13:56:27.908Z">
+<meta property="article:modified_time" content="2025-07-16T15:02:42.707Z">
+<meta property="article:author" content="wqx">
+<meta property="article:tag" content="网络开发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Unity网络开发基础（二）",
+  "url": "http://wqxblog.top/%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91/Unity%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%EF%BC%88%E4%BA%8C%EF%BC%89/",
+  "image": "https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg",
+  "datePublished": "2025-07-16T13:56:27.908Z",
+  "dateModified": "2025-07-16T15:02:42.707Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "wqx",
+      "url": "http://wqxblog.top/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://wqxblog.top/%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91/Unity%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%EF%BC%88%E4%BA%8C%EF%BC%89/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Unity网络开发基础（二）',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 25%,#34495e 45%,#2980b9 80%,#1a1a1a 100%);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">17</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">17</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 40%,#34495e 60%,#2980b9 80%,#1a1a1a 100%);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">游戏开发笔记</span></a><a class="nav-page-title" href="/"><span class="site-name">Unity网络开发基础（二）</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Unity网络开发基础（二）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-07-16T13:56:27.908Z" title="发表于 2025-07-16 21:56:27">2025-07-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-16T15:02:42.707Z" title="更新于 2025-07-16 23:02:42">2025-07-16</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91/">网络开发</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">876</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>内容概况：文件传输FTP，HTTP</p>
+</blockquote>
+<h1 id="一、文件传输FTP"><a href="#一、文件传输FTP" class="headerlink" title="一、文件传输FTP"></a>一、文件传输FTP</h1><h2 id="1-FTP工作原理"><a href="#1-FTP工作原理" class="headerlink" title="1.FTP工作原理"></a>1.FTP工作原理</h2><h3 id="（1）FTP是什么？？"><a href="#（1）FTP是什么？？" class="headerlink" title="（1）FTP是什么？？"></a>（1）FTP是什么？？</h3><blockquote>
+<ul>
+<li>FTP文件传输协议，是支持Internet文件传输的各种规则所组成的集合。</li>
+<li>这些规则使internet用户可以把<code>文件从一台主机上拷贝到另一台主机上</code>。</li>
+<li>除此之外，还提供登录、目录查询以及其他会话控制等功能。</li>
+<li><code>解释</code>：<ul>
+<li><code>FTP文件协议就是一个在网络中上传下载文件的一套规则</code>。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="（2）FTP的工作原理"><a href="#（2）FTP的工作原理" class="headerlink" title="（2）FTP的工作原理"></a>（2）FTP的工作原理</h3><blockquote>
+<ul>
+<li><p><code>FTP本质</code>：</p>
+<ul>
+<li><p><code>FTP的本质是TCP通信</code></p>
+</li>
+<li><p>通过FTP传输文件，双发至少需要建立两个TCP连接。</p>
+</li>
+<li><p>一个称为控制连接，用于传输FTP命令。</p>
+</li>
+<li><p>一个称为数据连接，用于传输文件数据。</p>
+</li>
+</ul>
+</li>
+<li><p>疑问：为什么不用一个TCP连接？？</p>
+<ul>
+<li>区分消息上有困难。如果只有一个通信连接，既要区分FTP命令，又要区分文件包，其实是很困难的。</li>
+</ul>
+</li>
+</ul>
+<p>​	        <img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250716221301434.png" alt="image-20250716221301434" style="zoom:67%;" /></p>
+</blockquote>
+<blockquote>
+<ul>
+<li><p><code>FTP的数据连接和控制连接方向一般是相反的</code></p>
+</li>
+<li><p>举例说明：</p>
+<ul>
+<li><p>用户使用<code>FTP客户端连接FTP服务器请求下载文件</code></p>
+</li>
+<li><p>控制连接方向：</p>
+<ul>
+<li><code>客户端主动连接服务器告知其下载命令</code></li>
+</ul>
+</li>
+<li><p>数据连接方向：</p>
+<ul>
+<li><code>服务端主动连接客户端下发数据</code></li>
+</ul>
+  <img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250716221611937.png" alt="image-20250716221611937" style="zoom:67%;" /></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>当客户端和FTP服务器建立控制连接后，需要主动告诉服务器采用哪种<code>传输模式</code>。</p>
+</blockquote>
+<blockquote>
+<ol>
+<li><p><code>主动模式（Port模式）</code></p>
+<p> 服务器主动连接客户端，然后传输文件。</p>
+</li>
+<li><p>被动模式（Passive模式）</p>
+<p> 客户端主动连接服务器</p>
+<p> 即控制连接和数据连接都由客户端发起。</p>
+<p> ​    <code>一般情况下主动模式会受客户端防火墙影响，所以被动模式使用较多。</code></p>
+</li>
+</ol>
+</blockquote>
+<blockquote>
+<p>在使用FTP进行数据传输时，有两种数据传输方式。</p>
+</blockquote>
+<blockquote>
+<ol>
+<li><p><code>ASCLL传输方式</code></p>
+<p> 以ASCLL编码方式传输数据，适用于传输<code>仅包含</code>英文的命令和参数或者英文文本文件。</p>
+</li>
+<li><p><code>二进制传输方式（建议使用方式）</code></p>
+<p> 可以指定采用哪种编码传输命令和文件数据。</p>
+<p> 如果传输的文件不是英文文件则应该采用该方式。</p>
+</li>
+</ol>
+<ul>
+<li><p>一般情况下，使用FTP传输文件时。客户端必须限登录服务器，获取相应权限后，才能上传或下载文件。</p>
+<p>  服务器也可以允许用户匿名登录FTP，不需要都拥有一个合法账号。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="2-搭建FTP服务器"><a href="#2-搭建FTP服务器" class="headerlink" title="2.搭建FTP服务器"></a>2.搭建FTP服务器</h2><blockquote>
+<ul>
+<li>下载Serv-U等FTP服务器软件，在想要作为FTP服务器的电脑上运行即可。</li>
+</ul>
+</blockquote>
+<blockquote>
+<ol>
+<li>创建域  直接不停下一步即可</li>
+<li>使用单向加密</li>
+<li>创建用于上传下载的FTP  账号密码</li>
+</ol>
+</blockquote>
+<h2 id="3-FTP关键类"><a href="#3-FTP关键类" class="headerlink" title="3. FTP关键类"></a>3. FTP关键类</h2><h3 id="（1）NetworkCredential类"><a href="#（1）NetworkCredential类" class="headerlink" title="（1）NetworkCredential类"></a>（1）NetworkCredential类</h3><blockquote>
+<ul>
+<li><p>命名空间：System.Net</p>
+</li>
+<li><p>NetworkCredential通信凭证类</p>
+</li>
+<li><p>作用：用于在Ftp文件传输时，设置账号密码。</p>
+  <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NetworkCredential n = <span class="keyword">new</span> NetworkCredential(<span class="string">&quot;WQX&quot;</span>,<span class="string">&quot;123456&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>参数一：账号</li>
+<li>参数二：密码</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="（2）FtpWebRequest类"><a href="#（2）FtpWebRequest类" class="headerlink" title="（2）FtpWebRequest类"></a>（2）FtpWebRequest类</h3><blockquote>
+<ul>
+<li>命名空间：System.Net</li>
+<li>Ftp传输协议客户端操作类</li>
+<li>作用：上传、下载、删除服务器上的文件。</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><p>重要方法：</p>
+<ol>
+<li><p><code>Create   创建新的WebRequest，用于进行Ftp相关操作</code></p>
+ <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FtpWebRequest req = (FtpWebRequest)FtpWebRequest.Create(<span class="keyword">new</span> Uri(<span class="string">&quot;ftp://127.0.0.1/Test.txt&quot;</span>));</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Abort 如果正在进行文件传输，用此方法可以终止传输</p>
+ <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">req.Abort();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>GetRequestStream 获取用于上传的流</p>
+ <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Stream s = req.GetRequestStream();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>GetResponse  返回FTP服务器响应</p>
+ <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FtpWebResponse res = req.GetResponse() <span class="keyword">as</span> FtpWebResponse;</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+</ul>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://wqxblog.top">wqx</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://wqxblog.top/%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91/Unity%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%EF%BC%88%E4%BA%8C%EF%BC%89/">http://wqxblog.top/%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91/Unity%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%EF%BC%88%E4%BA%8C%EF%BC%89/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://wqxblog.top" target="_blank">游戏开发笔记</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91/">网络开发</a></div><div class="post-share"><div class="social-share" data-image="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91/Unity%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%80%EF%BC%89/" title="Unity网络开发基础（一）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Unity网络开发基础（一）</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91/Unity%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91%E5%89%8D%E7%BD%AE/" title="Unity网络开发前置知识"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-01</div><div class="info-item-2">Unity网络开发前置知识</div></div><div class="info-2"><div class="info-item-1">一、网络开发必备知识点1.线程和线程池（1）回顾——线程  Unity支持多线程 Unity中开启的多线程不能使用主线程中的对象 Unity中开启多线程后一定要关闭,因为它是在unity编辑器生成一个线程，除非关闭编辑器否则不会关闭线程。   12345678Thread t = new Thread(()=&gt;&#123;   while(true)&#123;       print(&quot;123&quot;);       Thread.Sleep(1000);   &#125; &#125;);t.Start();t.Abort();//关闭线程  （2）线程池 命名空间：System.threading 类名：ThreadPool ...</div></div></div></a><a class="pagination-related" href="/%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91/Unity%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%80%EF%BC%89/" title="Unity网络开发基础（一）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-03</div><div class="info-item-2">Unity网络开发基础（一）</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">wqx</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">17</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">17</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">-只用于学习如有版权问题请联系我 484807196@qq.com</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93FTP"><span class="toc-number">1.</span> <span class="toc-text">一、文件传输FTP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-FTP%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">1.FTP工作原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%881%EF%BC%89FTP%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%EF%BC%9F"><span class="toc-number">1.1.1.</span> <span class="toc-text">（1）FTP是什么？？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%882%EF%BC%89FTP%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">1.1.2.</span> <span class="toc-text">（2）FTP的工作原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%90%AD%E5%BB%BAFTP%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">1.2.</span> <span class="toc-text">2.搭建FTP服务器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-FTP%E5%85%B3%E9%94%AE%E7%B1%BB"><span class="toc-number">1.3.</span> <span class="toc-text">3. FTP关键类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%881%EF%BC%89NetworkCredential%E7%B1%BB"><span class="toc-number">1.3.1.</span> <span class="toc-text">（1）NetworkCredential类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%882%EF%BC%89FtpWebRequest%E7%B1%BB"><span class="toc-number">1.3.2.</span> <span class="toc-text">（2）FtpWebRequest类</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91/Unity%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%EF%BC%88%E4%BA%8C%EF%BC%89/" title="Unity网络开发基础（二）">Unity网络开发基础（二）</a><time datetime="2025-07-16T13:56:27.908Z" title="发表于 2025-07-16 21:56:27">2025-07-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91/Unity%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%80%EF%BC%89/" title="Unity网络开发基础（一）">Unity网络开发基础（一）</a><time datetime="2025-07-03T02:31:05.344Z" title="发表于 2025-07-03 10:31:05">2025-07-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91/Unity%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91%E5%89%8D%E7%BD%AE/" title="Unity网络开发前置知识">Unity网络开发前置知识</a><time datetime="2025-07-01T02:58:19.507Z" title="发表于 2025-07-01 10:58:19">2025-07-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Unity/Mesh%E7%BC%96%E7%A8%8B/UnityMesh%E4%B8%93%E9%A2%98/" title="Unity之Mesh网格">Unity之Mesh网格</a><time datetime="2025-06-16T06:52:01.633Z" title="发表于 2025-06-16 14:52:01">2025-06-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Shader/Shader%E5%AE%9E%E6%88%98/" title="Shader实战案例">Shader实战案例</a><time datetime="2025-05-19T14:25:27.305Z" title="发表于 2025-05-19 22:25:27">2025-05-19</time></div></div></div></div></div></div></main><footer id="footer" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 40%,#34495e 60%,#2980b9 80%,#1a1a1a 100%);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By wqx</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const initValine = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyValine = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const valineConfig = {
+      el: '#vcomment',
+      appId: 'pjJwWJWtXHLRCDLec3YJwOKJ-gzGzoHsz',
+      appKey: 'iQtqxeQmZAFwQ0VtxYgke25D',
+      avatar: 'monsterid',
+      serverURLs: 'https://pjjwwjwt.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      visitor: false,
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || window.location.pathname
+    }
+
+    new Valine(valineConfig)
+  }
+
+  const loadValine = async (el, path) => {
+    if (typeof Valine === 'function') {
+      initValine(el, path)
+    } else {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js')
+      initValine(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Valine' === 'Valine'
+      ? window.shuoshuoComment = { loadComment: loadValine }
+      : window.loadOtherComment = loadValine
+    return
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
