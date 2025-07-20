@@ -1,0 +1,277 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>UnityShader入门 | 游戏开发笔记</title><meta name="author" content="wqx"><meta name="copyright" content="wqx"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、光照1. 逐顶点光照和逐片元光照（1）逐顶点光照  在哪计算？？？ 顶点着色器 回调函数中   计算方式： 逐顶点光照会在每个物体的顶点上进行光照计算 这意味着光照计算只在物体的顶点位置上执行 而在顶点之间的内部区域&#96;&#96;使用插值来获得颜色信息   优点： 逐顶点光照的计算量较小，通常在移动设备上性能较好，适用于移动游戏等要求性能的场景   缺点： 照明效果可能不够精细，特别是在物体表面上的细节">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UnityShader入门">
+<meta property="og:url" content="http://wqxblog.top/Shader/UnityShader%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="游戏开发笔记">
+<meta property="og:description" content="一、光照1. 逐顶点光照和逐片元光照（1）逐顶点光照  在哪计算？？？ 顶点着色器 回调函数中   计算方式： 逐顶点光照会在每个物体的顶点上进行光照计算 这意味着光照计算只在物体的顶点位置上执行 而在顶点之间的内部区域&#96;&#96;使用插值来获得颜色信息   优点： 逐顶点光照的计算量较小，通常在移动设备上性能较好，适用于移动游戏等要求性能的场景   缺点： 照明效果可能不够精细，特别是在物体表面上的细节">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg">
+<meta property="article:published_time" content="2025-07-20T15:12:23.650Z">
+<meta property="article:modified_time" content="2025-07-20T16:03:51.937Z">
+<meta property="article:author" content="wqx">
+<meta property="article:tag" content="Shader">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "UnityShader入门",
+  "url": "http://wqxblog.top/Shader/UnityShader%E5%85%A5%E9%97%A8/",
+  "image": "https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg",
+  "datePublished": "2025-07-20T15:12:23.650Z",
+  "dateModified": "2025-07-20T16:03:51.937Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "wqx",
+      "url": "http://wqxblog.top/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://wqxblog.top/Shader/UnityShader%E5%85%A5%E9%97%A8/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'UnityShader入门',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 25%,#34495e 45%,#2980b9 80%,#1a1a1a 100%);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">19</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">17</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 40%,#34495e 60%,#2980b9 80%,#1a1a1a 100%);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">游戏开发笔记</span></a><a class="nav-page-title" href="/"><span class="site-name">UnityShader入门</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">UnityShader入门</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-07-20T15:12:23.650Z" title="发表于 2025-07-20 23:12:23">2025-07-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-20T16:03:51.937Z" title="更新于 2025-07-21 00:03:51">2025-07-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Shader/">Shader</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">502</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>1分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="一、光照"><a href="#一、光照" class="headerlink" title="一、光照"></a>一、光照</h1><h2 id="1-逐顶点光照和逐片元光照"><a href="#1-逐顶点光照和逐片元光照" class="headerlink" title="1. 逐顶点光照和逐片元光照"></a>1. 逐顶点光照和逐片元光照</h2><h3 id="（1）逐顶点光照"><a href="#（1）逐顶点光照" class="headerlink" title="（1）逐顶点光照"></a>（1）逐顶点光照</h3><blockquote>
+<ul>
+<li>在哪计算？？？<ul>
+<li><code>顶点着色器</code> 回调函数中</li>
+</ul>
+</li>
+<li><code>计算方式：</code><ul>
+<li>逐顶点光照会在<code>每个物体的顶点</code>上进行光照计算</li>
+<li>这意味着光照计算只在物体的顶点位置上执行</li>
+<li>而在顶点之间的<code>内部区域``使用插值</code>来获得颜色信息</li>
+</ul>
+</li>
+<li>优点：<ul>
+<li>逐顶点光照的<code>计算量较小</code>，通常在<code>移动设备</code>上<code>性能较好</code>，适用于移动游戏等要求性能的场景</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>照明效果可能<code>不够精细</code>，特别是在物体表面上的细节区域，因为颜<code>色插值可能不足以捕捉到细微的照明变化</code></li>
+</ul>
+</li>
+<li>适用场景：<ul>
+<li>逐顶点光照适用于<code>需要在有限资源下获得较好性能的场景</code>，例如移动游戏</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="（2）逐片元光照"><a href="#（2）逐片元光照" class="headerlink" title="（2）逐片元光照"></a>（2）逐片元光照</h3><blockquote>
+<ul>
+<li>在哪计算？？？<ul>
+<li><code>片元着色器</code> 回调函数中</li>
+</ul>
+</li>
+<li>计算方式：<ul>
+<li>逐片元光照会在<code>每个像素</code>（片元）上进行光照计算</li>
+<li>这意味着每个像素都会根据其位置、法线、材质等信息<code>独立</code>地进行光照<code>计算</code></li>
+</ul>
+</li>
+<li>优点：<ul>
+<li>逐片元光照提供了<code>更高的精细度</code>，可以捕捉到物体表面上的细微照明变化，提供更逼真的效果</li>
+</ul>
+</li>
+<li>缺点:<ul>
+<li><code>计算量较大</code>，对于像素密集的场景需要更多的计算资源</li>
+</ul>
+</li>
+<li>适用场景：<ul>
+<li>逐片元光照通常用于<code>需要高质量照明效果的PC和主机游戏</code>，以及要求视觉逼真度较高的场景。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="（3）关于逐顶点光照的插值运算"><a href="#（3）关于逐顶点光照的插值运算" class="headerlink" title="（3）关于逐顶点光照的插值运算"></a>（3）关于逐顶点光照的插值运算</h3><blockquote>
+<ul>
+<li><p>大概规则：</p>
+<ul>
+<li><p>假设：三角面片的三个顶点A、B、C，该三角<code>面片中</code>的任何像素P，首先会计算出它<code>相对于3个顶点的位置权重</code></p>
+<p>  ​            然后使用这个权重参与到P点的颜色计算中</p>
+</li>
+<li><p><code>PixelColorP = WeightA * ColorA + WeightB * ColorB + WeightC * ColorC</code></p>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h1 id="二、纹理"><a href="#二、纹理" class="headerlink" title="二、纹理"></a>二、纹理</h1><h1 id="三、透明"><a href="#三、透明" class="headerlink" title="三、透明"></a>三、透明</h1></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://wqxblog.top">wqx</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://wqxblog.top/Shader/UnityShader%E5%85%A5%E9%97%A8/">http://wqxblog.top/Shader/UnityShader%E5%85%A5%E9%97%A8/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://wqxblog.top" target="_blank">游戏开发笔记</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Shader/">Shader</a></div><div class="post-share"><div class="social-share" data-image="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/Shader/Shader%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/" title="UnityShader前置知识"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">UnityShader前置知识</div></div><div class="info-2"><div class="info-item-1">  引言：主要为UnityShader中较为基础的部分   一、Shader结构初识1. 属性1Properties&#123;  属性定义&#125;  2.SubShader12345678910         SubShader//      &#123;//          //顶点-片段着色器 或 表面着色器 或 固定函数着色器//      &#125;//      SubShader//      &#123;//          //更加精简的版本//          //目的是适配旧设备//      &#125;//      .....可以有n个SubShader代码块  3.备用的Shader1Fallback &quot;备用的Shader&quot;  二、Shader的属性1. 属性的作用  1.可以在材质面板被编辑  2.可以在后续当作输入变量提供给所有子着色器使用   2. 属性的基本语法 1_Name(&quot;Display Name&quot;, type) =...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/Shader/Shader%E5%AE%9E%E6%88%98/" title="Shader实战案例"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-19</div><div class="info-item-2">Shader实战案例</div></div><div class="info-2"><div class="info-item-1"> 注：本系列为shader实战的精品案例，这些是必须要掌握的  Shader实战案例一、UV扰动之水纹效果 思路：利用噪声图信息偏移主UV图坐标，形成扰动效果。利用_Time平移顶点实现动画效果_，使扭曲纹理看起来在 X 和 Y 方向上滚动。   准备一张水面图，一张噪声图，噪声图可以看老唐shader，会讲如何制作。      效果图：     下面将一些：前置的知识点。  1.什么是噪声 它的本质是一种由数学算法公式生成的有规则性或可控的随机数据。    特性： 随机性：噪声数据本质上是随机的，这意味着它具有不规则性，无法通过简单的模式预测  平滑性：数据不会突然跳跃或变化，而是呈现出逐渐过渡的效果，适合模拟自然现象  周期性：随着坐标的变化，噪声值会重复出现，形成一个封闭的循环。也可以通过调整噪声的范围或修 改算法来避免  可调性：大多数噪声算法的输出是可以调整的，这种可调性允许你根据需求灵活地控制噪声的表现，适 应不同的视觉效果或逻辑处理需求 5....</div></div></div></a><a class="pagination-related" href="/Shader/Shader%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/" title="UnityShader前置知识"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-19</div><div class="info-item-2">UnityShader前置知识</div></div><div class="info-2"><div class="info-item-1">  引言：主要为UnityShader中较为基础的部分   一、Shader结构初识1. 属性1Properties&#123;  属性定义&#125;  2.SubShader12345678910         SubShader//      &#123;//          //顶点-片段着色器 或 表面着色器 或 固定函数着色器//      &#125;//      SubShader//      &#123;//          //更加精简的版本//          //目的是适配旧设备//      &#125;//      .....可以有n个SubShader代码块  3.备用的Shader1Fallback &quot;备用的Shader&quot;  二、Shader的属性1. 属性的作用  1.可以在材质面板被编辑  2.可以在后续当作输入变量提供给所有子着色器使用   2. 属性的基本语法 1_Name(&quot;Display Name&quot;, type) =...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">wqx</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">19</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">17</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">-只用于学习如有版权问题请联系我 484807196@qq.com</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%85%89%E7%85%A7"><span class="toc-number">1.</span> <span class="toc-text">一、光照</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E9%80%90%E9%A1%B6%E7%82%B9%E5%85%89%E7%85%A7%E5%92%8C%E9%80%90%E7%89%87%E5%85%83%E5%85%89%E7%85%A7"><span class="toc-number">1.1.</span> <span class="toc-text">1. 逐顶点光照和逐片元光照</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%881%EF%BC%89%E9%80%90%E9%A1%B6%E7%82%B9%E5%85%89%E7%85%A7"><span class="toc-number">1.1.1.</span> <span class="toc-text">（1）逐顶点光照</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%882%EF%BC%89%E9%80%90%E7%89%87%E5%85%83%E5%85%89%E7%85%A7"><span class="toc-number">1.1.2.</span> <span class="toc-text">（2）逐片元光照</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%883%EF%BC%89%E5%85%B3%E4%BA%8E%E9%80%90%E9%A1%B6%E7%82%B9%E5%85%89%E7%85%A7%E7%9A%84%E6%8F%92%E5%80%BC%E8%BF%90%E7%AE%97"><span class="toc-number">1.1.3.</span> <span class="toc-text">（3）关于逐顶点光照的插值运算</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%BA%B9%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">二、纹理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E9%80%8F%E6%98%8E"><span class="toc-number">3.</span> <span class="toc-text">三、透明</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Shader/UnityShader%E5%85%A5%E9%97%A8/" title="UnityShader入门">UnityShader入门</a><time datetime="2025-07-20T15:12:23.650Z" title="发表于 2025-07-20 23:12:23">2025-07-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Shader/Shader%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/" title="UnityShader前置知识">UnityShader前置知识</a><time datetime="2025-07-19T11:17:23.633Z" title="发表于 2025-07-19 19:17:23">2025-07-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91/Unity%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%EF%BC%88%E4%BA%8C%EF%BC%89/" title="Unity网络开发基础（二）">Unity网络开发基础（二）</a><time datetime="2025-07-16T13:56:27.908Z" title="发表于 2025-07-16 21:56:27">2025-07-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91/Unity%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%80%EF%BC%89/" title="Unity网络开发基础（一）">Unity网络开发基础（一）</a><time datetime="2025-07-03T02:31:05.344Z" title="发表于 2025-07-03 10:31:05">2025-07-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91/Unity%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91%E5%89%8D%E7%BD%AE/" title="Unity网络开发前置知识">Unity网络开发前置知识</a><time datetime="2025-07-01T02:58:19.507Z" title="发表于 2025-07-01 10:58:19">2025-07-01</time></div></div></div></div></div></div></main><footer id="footer" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 40%,#34495e 60%,#2980b9 80%,#1a1a1a 100%);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By wqx</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const initValine = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyValine = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const valineConfig = {
+      el: '#vcomment',
+      appId: 'pjJwWJWtXHLRCDLec3YJwOKJ-gzGzoHsz',
+      appKey: 'iQtqxeQmZAFwQ0VtxYgke25D',
+      avatar: 'monsterid',
+      serverURLs: 'https://pjjwwjwt.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      visitor: false,
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || window.location.pathname
+    }
+
+    new Valine(valineConfig)
+  }
+
+  const loadValine = async (el, path) => {
+    if (typeof Valine === 'function') {
+      initValine(el, path)
+    } else {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js')
+      initValine(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Valine' === 'Valine'
+      ? window.shuoshuoComment = { loadComment: loadValine }
+      : window.loadOtherComment = loadValine
+    return
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
