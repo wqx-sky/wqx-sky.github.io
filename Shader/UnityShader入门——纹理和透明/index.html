@@ -1,11 +1,13 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>UnityShader入门——纹理和透明 | 游戏开发笔记</title><meta name="author" content="wqx"><meta name="copyright" content="wqx"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="article">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>UnityShader入门——纹理和透明 | 游戏开发笔记</title><meta name="author" content="wqx"><meta name="copyright" content="wqx"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、纹理1.纹理的概念（1）纹理是用来干嘛的  骨：模型骨骼 肉：三角面片（由模型顶点围成模型的轮廓） 皮：纹理图片 纹理的主要作用：使用一张图片来控制模型的外观 使用纹理映射技术，将图片和模型联系起来，让模型能呈现出图片中的颜色表现 纹理映射： 它用来将图像（纹理）映射到三维模型的表面，从而赋予模型更加真实和细致的外观。 这个过程实际上是将二维图像映射到三维空间的过程       （2）如何进行">
+<meta property="og:type" content="article">
 <meta property="og:title" content="UnityShader入门——纹理和透明">
 <meta property="og:url" content="http://wqxblog.top/Shader/UnityShader%E5%85%A5%E9%97%A8%E2%80%94%E2%80%94%E7%BA%B9%E7%90%86%E5%92%8C%E9%80%8F%E6%98%8E/index.html">
 <meta property="og:site_name" content="游戏开发笔记">
+<meta property="og:description" content="一、纹理1.纹理的概念（1）纹理是用来干嘛的  骨：模型骨骼 肉：三角面片（由模型顶点围成模型的轮廓） 皮：纹理图片 纹理的主要作用：使用一张图片来控制模型的外观 使用纹理映射技术，将图片和模型联系起来，让模型能呈现出图片中的颜色表现 纹理映射： 它用来将图像（纹理）映射到三维模型的表面，从而赋予模型更加真实和细致的外观。 这个过程实际上是将二维图像映射到三维空间的过程       （2）如何进行">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg">
 <meta property="article:published_time" content="2025-07-22T06:14:08.876Z">
-<meta property="article:modified_time" content="2025-07-22T06:15:09.086Z">
+<meta property="article:modified_time" content="2025-07-22T15:44:13.461Z">
 <meta property="article:author" content="wqx">
 <meta property="article:tag" content="Shader">
 <meta name="twitter:card" content="summary">
@@ -16,7 +18,7 @@
   "url": "http://wqxblog.top/Shader/UnityShader%E5%85%A5%E9%97%A8%E2%80%94%E2%80%94%E7%BA%B9%E7%90%86%E5%92%8C%E9%80%8F%E6%98%8E/",
   "image": "https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg",
   "datePublished": "2025-07-22T06:14:08.876Z",
-  "dateModified": "2025-07-22T06:15:09.086Z",
+  "dateModified": "2025-07-22T15:44:13.461Z",
   "author": [
     {
       "@type": "Person",
@@ -155,9 +157,337 @@
 }</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
   title: 'UnityShader入门——纹理和透明',
   isHighlightShrink: false,
-  isToc: false,
+  isToc: true,
   pageType: 'post'
-}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 25%,#34495e 45%,#2980b9 80%,#1a1a1a 100%);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">17</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 40%,#34495e 60%,#2980b9 80%,#1a1a1a 100%);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">游戏开发笔记</span></a><a class="nav-page-title" href="/"><span class="site-name">UnityShader入门——纹理和透明</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">UnityShader入门——纹理和透明</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-07-22T06:14:08.876Z" title="发表于 2025-07-22 14:14:08">2025-07-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-22T06:15:09.086Z" title="更新于 2025-07-22 14:15:09">2025-07-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Shader/">Shader</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">0</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>1分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://wqxblog.top">wqx</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://wqxblog.top/Shader/UnityShader%E5%85%A5%E9%97%A8%E2%80%94%E2%80%94%E7%BA%B9%E7%90%86%E5%92%8C%E9%80%8F%E6%98%8E/">http://wqxblog.top/Shader/UnityShader%E5%85%A5%E9%97%A8%E2%80%94%E2%80%94%E7%BA%B9%E7%90%86%E5%92%8C%E9%80%8F%E6%98%8E/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://wqxblog.top" target="_blank">游戏开发笔记</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Shader/">Shader</a></div><div class="post-share"><div class="social-share" data-image="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/Lua/%E9%9D%A2%E8%AF%95%E9%A2%98%E7%9B%AE%E6%B1%87%E6%80%BB/" title="面试题目汇总"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">面试题目汇总</div></div><div class="info-2"><div class="info-item-1">  引言：此部分为多方收集，包括Unity、C#、shader、网络等等题目。欢迎大家指正批评。   C#部分问题一  装箱和拆箱指的是什么？？ 答案： 装箱——把栈中的内容迁移到堆中去。（值转引用类型） 拆箱——把堆中的内容迁移到栈中去。（引用转值类型）       问题二  值和引用类型在赋值时有什么区别？？ 答案： 值类型：直接存储数据本身，分配在栈内存。赋值时，逐字段复制。 引用类型：存储数据的内存地址引用，实际数据分配在堆内存。赋值时，仅复制内存地址。       问题三  委托和事件在使用上的区别是什么？   </div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/Shader/Shader%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/" title="UnityShader前置知识"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-19</div><div class="info-item-2">UnityShader前置知识</div></div><div class="info-2"><div class="info-item-1">  引言：主要为UnityShader中较为基础的部分   一、Shader结构初识1. 属性1Properties&#123;  属性定义&#125;  2.SubShader12345678910         SubShader//      &#123;//          //顶点-片段着色器 或 表面着色器 或 固定函数着色器//      &#125;//      SubShader//      &#123;//          //更加精简的版本//          //目的是适配旧设备//      &#125;//      .....可以有n个SubShader代码块  3.备用的Shader1Fallback &quot;备用的Shader&quot;  二、Shader的属性1. 属性的作用  1.可以在材质面板被编辑  2.可以在后续当作输入变量提供给所有子着色器使用   2. 属性的基本语法 1_Name(&quot;Display Name&quot;, type) =...</div></div></div></a><a class="pagination-related" href="/Shader/Shader%E5%AE%9E%E6%88%98/" title="Shader实战案例"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-19</div><div class="info-item-2">Shader实战案例</div></div><div class="info-2"><div class="info-item-1"> 注：本系列为shader实战的精品案例，这些是必须要掌握的  Shader实战案例一、UV扰动之水纹效果 思路：利用噪声图信息偏移主UV图坐标，形成扰动效果。利用_Time平移顶点实现动画效果_，使扭曲纹理看起来在 X 和 Y 方向上滚动。   准备一张水面图，一张噪声图，噪声图可以看老唐shader，会讲如何制作。      效果图：     下面将一些：前置的知识点。  1.什么是噪声 它的本质是一种由数学算法公式生成的有规则性或可控的随机数据。    特性： 随机性：噪声数据本质上是随机的，这意味着它具有不规则性，无法通过简单的模式预测  平滑性：数据不会突然跳跃或变化，而是呈现出逐渐过渡的效果，适合模拟自然现象  周期性：随着坐标的变化，噪声值会重复出现，形成一个封闭的循环。也可以通过调整噪声的范围或修 改算法来避免  可调性：大多数噪声算法的输出是可以调整的，这种可调性允许你根据需求灵活地控制噪声的表现，适 应不同的视觉效果或逻辑处理需求 5....</div></div></div></a><a class="pagination-related" href="/Shader/UnityShader%E5%85%A5%E9%97%A8%E2%80%94%E2%80%94%E5%85%89%E7%85%A7/" title="UnityShader入门——光照"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-20</div><div class="info-item-2">UnityShader入门——光照</div></div><div class="info-2"><div class="info-item-1">1. 逐顶点光照和逐片元光照（1）逐顶点光照  在哪计算？？？ 顶点着色器 回调函数中   计算方式： 逐顶点光照会在每个物体的顶点上进行光照计算 这意味着光照计算只在物体的顶点位置上执行 而在顶点之间的内部区域``使用插值来获得颜色信息   优点： 逐顶点光照的计算量较小，通常在移动设备上性能较好，适用于移动游戏等要求性能的场景   缺点： 照明效果可能不够精细，特别是在物体表面上的细节区域，因为颜色插值可能不足以捕捉到细微的照明变化   适用场景： 逐顶点光照适用于需要在有限资源下获得较好性能的场景，例如移动游戏     （2）逐片元光照  在哪计算？？？ 片元着色器...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">wqx</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">17</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">-只用于学习如有版权问题请联系我 484807196@qq.com</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Shader/UnityShader%E5%85%A5%E9%97%A8%E2%80%94%E2%80%94%E7%BA%B9%E7%90%86%E5%92%8C%E9%80%8F%E6%98%8E/" title="UnityShader入门——纹理和透明">UnityShader入门——纹理和透明</a><time datetime="2025-07-22T06:14:08.876Z" title="发表于 2025-07-22 14:14:08">2025-07-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Lua/%E9%9D%A2%E8%AF%95%E9%A2%98%E7%9B%AE%E6%B1%87%E6%80%BB/" title="面试题目汇总">面试题目汇总</a><time datetime="2025-07-21T15:37:30.806Z" title="发表于 2025-07-21 23:37:30">2025-07-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Shader/UnityShader%E5%85%A5%E9%97%A8%E2%80%94%E2%80%94%E5%85%89%E7%85%A7/" title="UnityShader入门——光照">UnityShader入门——光照</a><time datetime="2025-07-20T15:12:23.650Z" title="发表于 2025-07-20 23:12:23">2025-07-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Shader/Shader%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/" title="UnityShader前置知识">UnityShader前置知识</a><time datetime="2025-07-19T11:17:23.633Z" title="发表于 2025-07-19 19:17:23">2025-07-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91/Unity%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%EF%BC%88%E4%BA%8C%EF%BC%89/" title="Unity网络开发基础（二）">Unity网络开发基础（二）</a><time datetime="2025-07-16T13:56:27.908Z" title="发表于 2025-07-16 21:56:27">2025-07-16</time></div></div></div></div></div></div></main><footer id="footer" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 40%,#34495e 60%,#2980b9 80%,#1a1a1a 100%);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By wqx</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 25%,#34495e 45%,#2980b9 80%,#1a1a1a 100%);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">17</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 40%,#34495e 60%,#2980b9 80%,#1a1a1a 100%);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">游戏开发笔记</span></a><a class="nav-page-title" href="/"><span class="site-name">UnityShader入门——纹理和透明</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">UnityShader入门——纹理和透明</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-07-22T06:14:08.876Z" title="发表于 2025-07-22 14:14:08">2025-07-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-22T15:44:13.461Z" title="更新于 2025-07-22 23:44:13">2025-07-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Shader/">Shader</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="一、纹理"><a href="#一、纹理" class="headerlink" title="一、纹理"></a>一、纹理</h1><h2 id="1-纹理的概念"><a href="#1-纹理的概念" class="headerlink" title="1.纹理的概念"></a>1.纹理的概念</h2><h3 id="（1）纹理是用来干嘛的"><a href="#（1）纹理是用来干嘛的" class="headerlink" title="（1）纹理是用来干嘛的"></a>（1）纹理是用来干嘛的</h3><blockquote>
+<ul>
+<li>骨：模型骨骼</li>
+<li>肉：三角面片（由模型顶点围成模型的轮廓）</li>
+<li>皮：纹理图片</li>
+<li><code>纹理的主要作用</code>：使用一张<code>图片</code>来<code>控制模型的外观</code><ul>
+<li>使用纹理映射技术，将图片和模型联系起来，让模型能呈现出图片中的颜色表现</li>
+<li><code>纹理映射</code>：<ul>
+<li>它用来将图像（纹理）映射到三维模型的表面，从而赋予模型更加真实和细致的外观。</li>
+<li>这个过程实际上是将二维图像映射到三维空间的过程</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="（2）如何进行纹理映射？"><a href="#（2）如何进行纹理映射？" class="headerlink" title="（2）如何进行纹理映射？"></a>（2）如何进行纹理映射？</h3><blockquote>
+<ul>
+<li><p>利用纹理展开技术把纹理映射坐标存储在每个顶点上。模型表面的顶点都与纹理坐标相关联</p>
+</li>
+<li><p>纹理坐标通常使用二维坐标系统（称为UV坐标），其中U表示水平轴，V表示垂直轴</p>
+  <img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250722142759242.png" alt="image-20250722142759242" style="zoom:50%;" /></li>
+</ul>
+</blockquote>
+<h3 id="（3）UV坐标对于Shader开发的意义"><a href="#（3）UV坐标对于Shader开发的意义" class="headerlink" title="（3）UV坐标对于Shader开发的意义"></a>（3）UV坐标对于Shader开发的意义</h3><blockquote>
+<ul>
+<li>我们在进行Shader开发时，在顶点着色器回调函数传入的数据中可以获取到模型中的UV坐标的数据。</li>
+<li>有了UV坐标，只要有正确的纹理贴图（图片），就可以用顶点的UV坐标从图片中取出映射的颜色用于渲染。</li>
+</ul>
+</blockquote>
+<h3 id="（4）UV坐标的注意事项"><a href="#（4）UV坐标的注意事项" class="headerlink" title="（4）UV坐标的注意事项"></a>（4）UV坐标的<code>注意事项</code></h3><blockquote>
+<ul>
+<li><p>纹理坐标（UV坐标）的横轴和纵轴的取值范围是<code>被归一化过的</code>，在[0,1]的范围中<br>   主要目的是为了适应不同大小的纹理图片（256x256、512x512、1024x1024等等）</p>
+</li>
+<li><p><code>只有顶点中记录了UV坐标</code>，因此在数据传递进片元着色器之前，UV坐标会在中间阶段进行插值运算。</p>
+<p>  也就是<code>每个片元中得到的UV</code>坐标大部分<code>都是插值计算得结果</code>，因此我们可以得到图片中非顶点位置的颜色</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="2-单张纹理"><a href="#2-单张纹理" class="headerlink" title="2. 单张纹理"></a>2. 单张纹理</h2><h3 id="（1）书写单张纹理颜色采样Shader"><a href="#（1）书写单张纹理颜色采样Shader" class="headerlink" title="（1）书写单张纹理颜色采样Shader"></a>（1）书写单张纹理颜色采样Shader</h3><blockquote>
+<ol>
+<li>第一步  完成Shader文件基本结构，让其不报错</li>
+<li>第二步  纹理属性和CG成员变量声明<ul>
+<li>关键知识点：<ul>
+<li>CG中映射ShaderLab中的纹理属性，需要有两个成员变量</li>
+<li>一个用于映射纹理颜色数据，一个用于映射纹理缩放平移数据</li>
+</ul>
+</li>
+<li><code>ShaderLab中的属性：</code>图片属性（2D）。用于利用UV坐标提取其中颜色</li>
+<li><code>CG中用于映射属性的成员变量</code>：<ul>
+<li>1.sampler2D 用于映射纹理图片</li>
+<li>2.float4    用于映射纹理图片的缩放和平移。（固定命名方式 纹理名_ST (S代表scale缩放 T代表translation平移)）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>第三步 用缩放平移参数参与uv值计算<ul>
+<li><code>如何获取模型中携带的uv信息</code>？<ul>
+<li>在顶点着色器中，我们可以利用<code>TEXCOORD语义</code>获取到模型中的纹理坐标信息</li>
+<li>它是一个float4类型的</li>
+<li>xy获取到的是纹理坐标的水平和垂直坐标</li>
+<li>zw获取到的是纹理携带的一些额外信息，例如深度值等</li>
+</ul>
+</li>
+<li><code>如何计算？？</code><ul>
+<li>固定算法：先缩放，后平(偏)移。缩放用乘法，平(偏)用加法</li>
+<li><code>纹理坐标.xy * 纹理名_ ST.xy + 纹理名_ ST.wz</code></li>
+<li>或者直接用内置宏   <code>TRANSFORM_TEX(纹理坐标变量, 纹理变量)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>第四步 在片元着色器中进行纹理颜色采样</li>
+</ol>
+</blockquote>
+<h3 id="（2）重要纹理相关设置回顾"><a href="#（2）重要纹理相关设置回顾" class="headerlink" title="（2）重要纹理相关设置回顾"></a>（2）重要纹理相关设置回顾</h3><blockquote>
+<ol>
+<li><p>Texture Type(纹理图片类型) 和 Texture Shape(纹理图片类型)</p>
+<p> 决定了我们是否能在Shader当中获取正确数据</p>
+</li>
+<li><p>Wrap Mode(循环模式)</p>
+<p> 决定了缩放偏移的表现效果</p>
+<ul>
+<li>Repeat：在区块中重复纹理</li>
+<li>Clamp： 拉伸纹理的边缘</li>
+<li>Mirror：在每个整数边界上镜像纹理以创建重复图案</li>
+<li>Mirror Once：镜像纹理一次，然后将拉伸边缘纹理</li>
+<li>Per-axis：单独控制如何在U轴和V轴上包裹纹理</li>
+</ul>
+</li>
+<li><p>Filter Mode(过滤模式)</p>
+<p> 决定了放大缩小纹理时看到的图片质量</p>
+<ul>
+<li>Point：纹理在靠近时变为块状</li>
+<li>Bilinear：纹理在靠近时变得模糊</li>
+<li>Trilinear：与Bilinear类似，但纹理也在不同的Mip级别之间模糊</li>
+<li>过滤模式在开启MipMaps根据实际表现选择，可以达到不同的表现效果</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<h3 id="（3）单张纹理结合BlinnPhong光照模型"><a href="#（3）单张纹理结合BlinnPhong光照模型" class="headerlink" title="（3）单张纹理结合BlinnPhong光照模型"></a>（3）单张纹理结合BlinnPhong光照模型</h3><blockquote>
+<ul>
+<li><p>在计算时，有以下的3点注意点</p>
+<ol>
+<li><p><code>纹理颜色</code>需要和<code>漫反射材料颜色</code> 进行<code>乘法叠加</code>, 它们两共同影响最终的颜色</p>
+ <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fixed3 col = tex2D(_MainTex, i.uv) * _LambertColor;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>兰伯特光照模型计算时，漫反射材质颜色使用 1 中的叠加颜色计算</p>
+ <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fixed3 lambertColor = LambertColor(i.wNormal) * col ;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>最终使用的环境光叠加时，环境光变量UNITY_LIGHTMODEL_AMBIENT需要和 1 中颜色进行乘法叠加</p>
+</li>
+</ol>
+<p>  ​        为了避免最终的渲染效果偏灰</p>
+  <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fixed3 color = col * UNITY_LIGHTMODEL_AMBIENT + blinnPhongColor +lambertColor;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>其他的计算步骤同BlinnPhong的逐片元光照实现</li>
+</ol>
+</li>
+</ul>
+</blockquote>
+<h3 id="（4）实现代码"><a href="#（4）实现代码" class="headerlink" title="（4）实现代码"></a>（4）实现代码</h3><blockquote>
+<ul>
+<li><p>效果：上为没有光照，下为有光照</p>
+  <img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250722212908560.png" alt="image-20250722212908560" style="zoom: 67%;" /></li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><p>代码：</p>
+  <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line">Shader <span class="string">&quot;Unlit/SimpleTexture&quot;</span> &#123;</span><br><span class="line">    Properties &#123;</span><br><span class="line">        <span class="comment">//主纹理</span></span><br><span class="line">        _MainTex (<span class="string">&quot;Texture&quot;</span>, <span class="number">2</span>D) = <span class="string">&quot;white&quot;</span> &#123; &#125;</span><br><span class="line">        <span class="comment">//漫反射材质光照颜色</span></span><br><span class="line">        _LambertColor (<span class="string">&quot;LambertColor&quot;</span>, Color) = (<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">        <span class="comment">//高光材质光照颜色</span></span><br><span class="line">        _BlinnPhongColor (<span class="string">&quot;BlinnPhongColor&quot;</span>, Color) = (<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">        _HighLightValue (<span class="string">&quot;HighLightValue&quot;</span>, Range(<span class="number">0</span>, <span class="number">20</span>)) = <span class="number">10</span></span><br><span class="line">    &#125;</span><br><span class="line">    SubShader &#123;</span><br><span class="line">        Tags &#123; <span class="string">&quot;RenderType&quot;</span> = <span class="string">&quot;Opaque&quot;</span> &#125;</span><br><span class="line">        LOD <span class="number">100</span></span><br><span class="line"></span><br><span class="line">        Pass &#123;</span><br><span class="line">            Tags &#123; <span class="string">&quot;LightMode&quot;</span> = <span class="string">&quot;ForwardBase&quot;</span> &#125;</span><br><span class="line">            CGPROGRAM</span><br><span class="line">            <span class="meta">#<span class="keyword">pragma</span> vertex vert</span></span><br><span class="line">            <span class="meta">#<span class="keyword">pragma</span> fragment frag</span></span><br><span class="line">            <span class="comment">// make fog work</span></span><br><span class="line">            <span class="meta">#<span class="keyword">pragma</span> multi_compile_fog</span></span><br><span class="line"></span><br><span class="line">            <span class="meta">#include &quot;UnityCG.cginc&quot;</span></span><br><span class="line">            <span class="meta">#include &quot;Lighting.cginc&quot;</span></span><br><span class="line">            <span class="keyword">struct</span> appdata &#123;</span><br><span class="line">                float4 vertex : POSITION;</span><br><span class="line">                float2 uv : TEXCOORD0;</span><br><span class="line">                float3 normal : NORMAL;</span><br><span class="line">            &#125;;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">struct</span> v2f &#123;</span><br><span class="line">                float2 uv : TEXCOORD0;</span><br><span class="line">                <span class="comment">//裁剪空间下顶点</span></span><br><span class="line">                float4 vertex : SV_POSITION;</span><br><span class="line">                <span class="comment">//世界空间下法线</span></span><br><span class="line">                float3 wNormal : NORMAL;</span><br><span class="line">                <span class="comment">//世界空间下顶点</span></span><br><span class="line">                float3 wPos : TEXCOORD1;</span><br><span class="line">            &#125;;</span><br><span class="line">            <span class="comment">//映射对应纹理属性的图片颜色数据</span></span><br><span class="line">            sampler2D _MainTex;</span><br><span class="line">            <span class="comment">//映射对应纹理属性的缩放 平移数据</span></span><br><span class="line">            float4 _MainTex_ST;</span><br><span class="line"></span><br><span class="line">            fixed3 _LambertColor;</span><br><span class="line">            fixed3 _BlinnPhongColor;</span><br><span class="line">            <span class="built_in">float</span> _HighLightValue;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//漫反射颜色计算</span></span><br><span class="line">            <span class="comment">//参数：世界空间下法线</span></span><br><span class="line">            <span class="function">fixed3 <span class="title">LambertColor</span>(<span class="params">fixed3 wNormal</span>)</span> &#123;</span><br><span class="line">                float3 lightDir = normalize(_WorldSpaceLightPos0);</span><br><span class="line">                <span class="keyword">return</span> _LightColor0.rgb * max(<span class="number">0</span>, dot(lightDir, wNormal));</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//高光颜色计算</span></span><br><span class="line">            <span class="comment">//参数1：世界空间下顶点</span></span><br><span class="line">            <span class="comment">//参数2：世界空间下法线</span></span><br><span class="line">            <span class="function">fixed3 <span class="title">BlinnPhongColor</span>(<span class="params">fixed3 wPos, fixed3 wNormal</span>)</span> &#123;</span><br><span class="line">                <span class="comment">//计算标准化视口方向</span></span><br><span class="line">                float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - wPos.xyz);</span><br><span class="line">                <span class="comment">//计算标准化入射光方向</span></span><br><span class="line">                float3 lightDir = normalize(_WorldSpaceLightPos0.xyz);</span><br><span class="line">                <span class="comment">//计算半角向量</span></span><br><span class="line">                float3 halfDir = normalize(viewDir + lightDir);</span><br><span class="line">                <span class="keyword">return</span> _LightColor0 * _BlinnPhongColor * pow(max(<span class="number">0</span>, dot(wNormal, halfDir)), _HighLightValue);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="function">v2f <span class="title">vert</span>(<span class="params">appdata v</span>)</span> &#123;</span><br><span class="line">                v2f o;</span><br><span class="line">                </span><br><span class="line">                <span class="comment">//用平移缩放值参与uv计算</span></span><br><span class="line">                <span class="comment">//o.uv = v.uv.xy * _MainTex_ST.xy + _MainTex_ST.zw</span></span><br><span class="line">                <span class="comment">//如果没有进行缩放和平移 那么 这个计算后 值是不会产生变化的</span></span><br><span class="line">                <span class="comment">//因为缩放默认值是1和1 ，平移默认值是0和0</span></span><br><span class="line">                o.uv = TRANSFORM_TEX(v.uv, _MainTex);</span><br><span class="line">                o.vertex = UnityObjectToClipPos(v.vertex);</span><br><span class="line">                o.wPos = UnityObjectToWorldDir(v.vertex);</span><br><span class="line">                o.wNormal = UnityObjectToWorldNormal(v.normal);</span><br><span class="line">                <span class="keyword">return</span> o;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function">fixed4 <span class="title">frag</span>(<span class="params">v2f i</span>) : SV_Target</span> &#123;</span><br><span class="line">                <span class="comment">// sample the texture</span></span><br><span class="line">                <span class="comment">//这传入的uv 是经过插值运算后的 就是每一个片元都有自己的一个uv坐标</span></span><br><span class="line">                <span class="comment">//这样才能精准的在贴图当中取出颜色</span></span><br><span class="line">                <span class="comment">//`纹理颜色`需要和`漫反射材质颜色` 进行`乘法叠加`, 它们两共同影响最终的颜色</span></span><br><span class="line">                fixed3 col = tex2D(_MainTex, i.uv) * _LambertColor;</span><br><span class="line">                </span><br><span class="line">                <span class="comment">//新知识点：兰伯特光照模型计算时，漫反射材质颜色使用 1 中的叠加颜色计算</span></span><br><span class="line">                fixed3 lambertColor = LambertColor(i.wNormal) * col ;</span><br><span class="line">                fixed3 blinnPhongColor = BlinnPhongColor(i.wPos, i.wNormal);</span><br><span class="line">                <span class="comment">//环境光变量UNITY_LIGHTMODEL_AMBIENT需要和 1 中颜色进行乘法叠加，为了避免最终的渲染效果偏灰</span></span><br><span class="line"></span><br><span class="line">                fixed3 color = col * UNITY_LIGHTMODEL_AMBIENT + blinnPhongColor +lambertColor;</span><br><span class="line">                <span class="keyword">return</span> fixed4(color.rgb, <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            ENDCG</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</blockquote>
+<h2 id="3-凹凸纹理"><a href="#3-凹凸纹理" class="headerlink" title="3. 凹凸纹理"></a>3. 凹凸纹理</h2><h3 id="（1）凹凸纹理是用来做什么的？"><a href="#（1）凹凸纹理是用来做什么的？" class="headerlink" title="（1）凹凸纹理是用来做什么的？"></a>（1）凹凸纹理是用来做什么的？</h3><blockquote>
+<ul>
+<li><p><code>纹理</code>除了可以用来进行<code>颜色映射</code>外，另外一种常见的应用就是进行<code>凹凸映射</code> 。</p>
+</li>
+<li><p><code>凹凸映射的目的</code>：是使用一张纹理来修改<code>模型表面的法线</code>，让我们不需要增加顶点，而让 模型看起来有凹凸效果。</p>
+</li>
+<li><p>原理：</p>
+<ul>
+<li><code>光照的计算</code>都会利用<code>法线参与</code>计算，决定最终的颜色表现效果。那么在<code>计算“假” 凹凸面时``，使用“真”凹凸面的法线参与计算</code>，呈现出来的效果可以以假乱真</li>
+</ul>
+<p>  <img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250722220243014.png" alt="image-20250722220243014"></p>
+</li>
+<li><p><code>凹凸纹理最大的作用</code>：</p>
+<ul>
+<li>就是<code>让模型</code>可以在<code>不添加顶点</code>（不增加面）的情况下 让模型<code>看起来同样充满细节（凹凸感）</code>，是一种视觉上的“欺骗”技术。</li>
+</ul>
+</li>
+<li><p>要进行凹凸映射，目前有两种主流方式： 1.高度纹理贴图 2.法线纹理贴图</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="（2）高度纹理贴图-了解"><a href="#（2）高度纹理贴图-了解" class="headerlink" title="（2）高度纹理贴图(了解)"></a>（2）高度纹理贴图(了解)</h3><blockquote>
+<ul>
+<li><p>高度纹理贴图一般简称<code>高度图</code> 它<code>存储了模型表面上每个点的高度信息</code>。通常它使用灰度图像，其中不同灰度值 表示不同高度</p>
+</li>
+<li><p><code>较亮区域通常对应较高的点</code>，<code>较暗的区域对应较低的点</code>。 它<code>主要用于模拟物体表面的位移</code>。</p>
+  <img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250722220531814.png" alt="image-20250722220531814" style="zoom:33%;" />
+</li>
+<li><p>存储规则：图片中的某一个像素点的<code>RGB值是相同的</code>，都表示<code>高度值</code>，A值一般 情况下为1。<code>高度值范围一般为0~1，0代表最低，1     代表最高</code></p>
+</li>
+<li><p>优点：可以通过高度图很<code>明确的知道模型表面的凹凸情况</code></p>
+</li>
+<li><p>缺点：<code>无法在Shader中直接得到模型表面点的法线信息</code>， 而是需要通过额外的计算得到，因此会<code>增加性能消耗</code>，所以 我们几乎很少使用它。</p>
+</li>
+<li><p><code>我们在使用凹凸纹理时，一般都会使用法线纹理贴图</code>。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="（3）法线纹理贴图"><a href="#（3）法线纹理贴图" class="headerlink" title="（3）法线纹理贴图"></a>（3）法线纹理贴图</h3><blockquote>
+<ul>
+<li>法线纹理贴图一般简称<code>法线贴图 或 法线纹理</code> 。它<code>存储了模型表面上每个点的法线方向。</code></li>
+<li>存储规则：图片中的<code>RGB</code>值分别存储<code>法线的X、Y、Z分量值</code>，A值可以用于存储其他信息， 比如材质光滑度等。</li>
+<li>优点：从法线贴图中取出的数据便是法线信息，可以直接 简单处理后就参与光照计算，性能表现更好</li>
+<li>缺点：我们无法直观的看出模型表面的凹凸情况</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>法线纹理贴图读取分量数据的规则<ul>
+<li>由于<code>法线XYZ分量范围在[-1,1]之间</code>， 而<code>像素RGB分量范围在[0,1]之间</code> 因此我们需要做一个映射计算</li>
+<li><code>存储图片时</code>：<code>像素分量 = (法线分量 + 1) / 2</code>         因此当我们取出像素分量使用时需要进行逆运算</li>
+<li><code>读取数据时</code>：<code>法线分量 = 像素分量 * 2 -1</code></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><p>两种法线纹理贴图的存储方式</p>
+<ol>
+<li><p>基于模型空间的法线纹理</p>
+<p> <img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250722221108502.png" alt="image-20250722221108502"></p>
+</li>
+<li><p><code>基于切线空间的法线纹理</code></p>
+ <img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250722221153759.png" alt="image-20250722221153759" style="zoom: 33%;" /></li>
+</ol>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><p>切线空间下的法线纹理贴图是蓝色的原因</p>
+  <img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250722221252728.png" alt="image-20250722221252728" style="zoom: 33%;" /></li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><p>为什么要使用切线空间下的法线纹理贴图</p>
+  <img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250722221335160.png" alt="image-20250722221335160" style="zoom:33%;" /></li>
+</ul>
+</blockquote>
+<h3 id="（4）-法线贴图的计算方式"><a href="#（4）-法线贴图的计算方式" class="headerlink" title="（4） 法线贴图的计算方式"></a>（4） 法线贴图的计算方式</h3><blockquote>
+<ul>
+<li>两种主流计算方式<ol>
+<li>在<code>切线空间</code>下进行光照计算，需要把<code>光照方向、视角方向变换到切线空间</code>下参与计算</li>
+<li>在<code>世界空间</code>下进行光照计算，需要把<code>法线方向变换到世界空间</code>下参与计算</li>
+</ol>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><p>各自的优缺点——效率</p>
+<ul>
+<li><p><code>在切线空间中计算</code>，效率更高，因为可以在顶点着色器中就完成对光照、视角方向的矩 阵变换，计算量相对较小。</p>
+<p>   <code>( 矩阵变换在顶点着色器中计算)</code></p>
+</li>
+<li><p><code>在世界空间中计算，效率较低</code>，由于需要对法线贴图进行采样，所以变换过程必须在片 元着色器中实现，我们需要在片元着色器中对法线进行矩阵变换。 </p>
+<p>  <code>( 矩阵变换在片元着色器中计算)</code></p>
+</li>
+</ul>
+</li>
+<li><p>各自的优缺点——全局效果</p>
+<ul>
+<li><p><code>在切线空间中计算，对全局效果的表现可能会不够准确</code> </p>
+<p>  在处理一些列如镜面反射、环境映射效果时表现效果可能不够准确</p>
+</li>
+<li><p><code>在世界空间中计算，对全局效果的表现更准确</code> </p>
+<p>  可以更容易的应用于全局效果的计算</p>
+</li>
+</ul>
+</li>
+<li><p><code>若没有全局效果要求，我们优先使用在切线空间下进行光照计算，因为它效率较高</code></p>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><p><code>在切线空间下计算</code></p>
+<ul>
+<li><p>在切线空间下进行光照计算，需要把光照方向、视角方向变换到切线空间下参与计算.</p>
+</li>
+<li><p><code>关键点</code>：</p>
+<ul>
+<li><p><code>计算模型空间到切线空间的变换矩阵</code></p>
+  <img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250722233012607.png" alt="image-20250722233012607" style="zoom: 33%;" /></li>
+</ul>
+</li>
+<li><p>其它用到的核心知识:</p>
+<ul>
+<li><p>得到模型空间光的方向：<code>ObjSpaceLightDir</code>(模型空间顶点坐标)</p>
+</li>
+<li><p>得到模型空间视角方向：<code>ObjSpaceViewDir</code>(模型空间顶点坐标)</p>
+</li>
+<li><p>得到光方向和视角方向相对于模型空间的数据表达后，再与模型空间到切线空间的变换矩阵进行运算</p>
+<p>  即可将他们转换到切线空间下参与后续计算。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><p><code>在世界空间下计算</code></p>
+<ul>
+<li><p><code>在世界空间下进行光照计算，需要把法线方向变换到世界空间下参与计算</code></p>
+</li>
+<li><p>关键点：</p>
+<ul>
+<li><p><code>计算切线空间到世界空间的变换矩阵</code></p>
+<p> <img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250722233757581.png" alt="image-20250722233757581"></p>
+</li>
+</ul>
+  <img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250722233856096.png" alt="image-20250722233856096" style="zoom: 33%;" /></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><p>关键知识点补充：</p>
+<ul>
+<li><ol>
+<li><p>模型空间下的切线数据</p>
+<p>   <code>模型数据中的切线数据为float4类型的，其中的w表示副切线的方向 用法线和切线叉乘得到的副切线方向可能有两个，用切线数据中的w与之相乘确定副切线方向</code></p>
+   <img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250722234038014.png" alt="image-20250722234038014" style="zoom:50%;" />
+</li>
+<li><p>Unity当中的法线纹理类型</p>
+<p> <code>当我们把纹理类型设置为Normal map(法线贴图)时，我们可以使用Unity提供的内置函数 UnpackNormal来得到正确的法线方向。</code>该函数内部不仅可以<code>进行法线分量 = 像素分量 * 2 –1 的逆运算</code>，还会<code>进行解压运算（Unity会根据不同平台对法线纹理进行压缩）</code></p>
+<p> <img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250722234143332.png" alt="image-20250722234143332"></p>
+</li>
+<li><p><code>法线纹理属性命名一般为_BumpMap(凸块贴图)</code> </p>
+<p> <code>我们还会声明一个名为_BumpScale (凸块缩放) 的float属性 它主要用于控制凹凸程度</code></p>
+<p> 当它为0时，表示没有法线效果，法线的影响会被消除 当它为1时，表示使用法线贴图中的原始法线信息，没有缩放 我们可以根据实际需求调整它的值，来达到视觉上令人满意的效果。</p>
+</li>
+<li><p>如果使用的凹凸纹理不是法线纹理，而是高度纹理，我们需要进行如下设置</p>
+<p> <code>图片类型设置为Normal map（法线贴图）</code> </p>
+<p> <code>勾选 Create from Grayscale（从灰度创建）</code></p>
+<p>  <code>这样我们就可以把高度纹理当成切线空间下的法线纹理处理了</code> </p>
+<p>  多出的Bumpiness（颠簸值）控制凹凸程度</p>
+<p>  Filtering（过滤模式）决定计算凹凸程度的算法 </p>
+<p>  Sharp：滤波生成法线 </p>
+<p>  Smooth：平滑的生成法线</p>
+<p> <img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoraimage-20250722234353285.png" alt="image-20250722234353285"></p>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://wqxblog.top">wqx</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://wqxblog.top/Shader/UnityShader%E5%85%A5%E9%97%A8%E2%80%94%E2%80%94%E7%BA%B9%E7%90%86%E5%92%8C%E9%80%8F%E6%98%8E/">http://wqxblog.top/Shader/UnityShader%E5%85%A5%E9%97%A8%E2%80%94%E2%80%94%E7%BA%B9%E7%90%86%E5%92%8C%E9%80%8F%E6%98%8E/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://wqxblog.top" target="_blank">游戏开发笔记</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Shader/">Shader</a></div><div class="post-share"><div class="social-share" data-image="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/Lua/%E9%9D%A2%E8%AF%95%E9%A2%98%E7%9B%AE%E6%B1%87%E6%80%BB/" title="面试题目汇总"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">面试题目汇总</div></div><div class="info-2"><div class="info-item-1">  引言：此部分为多方收集，包括Unity、C#、shader、网络等等题目。欢迎大家指正批评。   C#部分问题一  装箱和拆箱指的是什么？？ 答案： 装箱——把栈中的内容迁移到堆中去。（值转引用类型） 拆箱——把堆中的内容迁移到栈中去。（引用转值类型）       问题二  值和引用类型在赋值时有什么区别？？ 答案： 值类型：直接存储数据本身，分配在栈内存。赋值时，逐字段复制。 引用类型：存储数据的内存地址引用，实际数据分配在堆内存。赋值时，仅复制内存地址。       问题三  委托和事件在使用上的区别是什么？   </div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/Shader/Shader%E5%AE%9E%E6%88%98/" title="Shader实战案例"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-19</div><div class="info-item-2">Shader实战案例</div></div><div class="info-2"><div class="info-item-1"> 注：本系列为shader实战的精品案例，这些是必须要掌握的  Shader实战案例一、UV扰动之水纹效果 思路：利用噪声图信息偏移主UV图坐标，形成扰动效果。利用_Time平移顶点实现动画效果_，使扭曲纹理看起来在 X 和 Y 方向上滚动。   准备一张水面图，一张噪声图，噪声图可以看老唐shader，会讲如何制作。      效果图：     下面将一些：前置的知识点。  1.什么是噪声 它的本质是一种由数学算法公式生成的有规则性或可控的随机数据。    特性： 随机性：噪声数据本质上是随机的，这意味着它具有不规则性，无法通过简单的模式预测  平滑性：数据不会突然跳跃或变化，而是呈现出逐渐过渡的效果，适合模拟自然现象  周期性：随着坐标的变化，噪声值会重复出现，形成一个封闭的循环。也可以通过调整噪声的范围或修 改算法来避免  可调性：大多数噪声算法的输出是可以调整的，这种可调性允许你根据需求灵活地控制噪声的表现，适 应不同的视觉效果或逻辑处理需求 5....</div></div></div></a><a class="pagination-related" href="/Shader/Shader%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/" title="UnityShader前置知识"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-19</div><div class="info-item-2">UnityShader前置知识</div></div><div class="info-2"><div class="info-item-1">  引言：主要为UnityShader中较为基础的部分   一、Shader结构初识1. 属性1Properties&#123;  属性定义&#125;  2.SubShader12345678910         SubShader//      &#123;//          //顶点-片段着色器 或 表面着色器 或 固定函数着色器//      &#125;//      SubShader//      &#123;//          //更加精简的版本//          //目的是适配旧设备//      &#125;//      .....可以有n个SubShader代码块  3.备用的Shader1Fallback &quot;备用的Shader&quot;  二、Shader的属性1. 属性的作用  1.可以在材质面板被编辑  2.可以在后续当作输入变量提供给所有子着色器使用   2. 属性的基本语法 1_Name(&quot;Display Name&quot;, type) =...</div></div></div></a><a class="pagination-related" href="/Shader/UnityShader%E5%85%A5%E9%97%A8%E2%80%94%E2%80%94%E5%85%89%E7%85%A7/" title="UnityShader入门——光照"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-20</div><div class="info-item-2">UnityShader入门——光照</div></div><div class="info-2"><div class="info-item-1">1. 逐顶点光照和逐片元光照（1）逐顶点光照  在哪计算？？？ 顶点着色器 回调函数中   计算方式： 逐顶点光照会在每个物体的顶点上进行光照计算 这意味着光照计算只在物体的顶点位置上执行 而在顶点之间的内部区域``使用插值来获得颜色信息   优点： 逐顶点光照的计算量较小，通常在移动设备上性能较好，适用于移动游戏等要求性能的场景   缺点： 照明效果可能不够精细，特别是在物体表面上的细节区域，因为颜色插值可能不足以捕捉到细微的照明变化   适用场景： 逐顶点光照适用于需要在有限资源下获得较好性能的场景，例如移动游戏     （2）逐片元光照  在哪计算？？？ 片元着色器...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">wqx</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">17</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">-只用于学习如有版权问题请联系我 484807196@qq.com</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%BA%B9%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">一、纹理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%BA%B9%E7%90%86%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-number">1.1.</span> <span class="toc-text">1.纹理的概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%881%EF%BC%89%E7%BA%B9%E7%90%86%E6%98%AF%E7%94%A8%E6%9D%A5%E5%B9%B2%E5%98%9B%E7%9A%84"><span class="toc-number">1.1.1.</span> <span class="toc-text">（1）纹理是用来干嘛的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%882%EF%BC%89%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E7%BA%B9%E7%90%86%E6%98%A0%E5%B0%84%EF%BC%9F"><span class="toc-number">1.1.2.</span> <span class="toc-text">（2）如何进行纹理映射？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%883%EF%BC%89UV%E5%9D%90%E6%A0%87%E5%AF%B9%E4%BA%8EShader%E5%BC%80%E5%8F%91%E7%9A%84%E6%84%8F%E4%B9%89"><span class="toc-number">1.1.3.</span> <span class="toc-text">（3）UV坐标对于Shader开发的意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%884%EF%BC%89UV%E5%9D%90%E6%A0%87%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">1.1.4.</span> <span class="toc-text">（4）UV坐标的注意事项</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%8D%95%E5%BC%A0%E7%BA%B9%E7%90%86"><span class="toc-number">1.2.</span> <span class="toc-text">2. 单张纹理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%881%EF%BC%89%E4%B9%A6%E5%86%99%E5%8D%95%E5%BC%A0%E7%BA%B9%E7%90%86%E9%A2%9C%E8%89%B2%E9%87%87%E6%A0%B7Shader"><span class="toc-number">1.2.1.</span> <span class="toc-text">（1）书写单张纹理颜色采样Shader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%882%EF%BC%89%E9%87%8D%E8%A6%81%E7%BA%B9%E7%90%86%E7%9B%B8%E5%85%B3%E8%AE%BE%E7%BD%AE%E5%9B%9E%E9%A1%BE"><span class="toc-number">1.2.2.</span> <span class="toc-text">（2）重要纹理相关设置回顾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%883%EF%BC%89%E5%8D%95%E5%BC%A0%E7%BA%B9%E7%90%86%E7%BB%93%E5%90%88BlinnPhong%E5%85%89%E7%85%A7%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.2.3.</span> <span class="toc-text">（3）单张纹理结合BlinnPhong光照模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%884%EF%BC%89%E5%AE%9E%E7%8E%B0%E4%BB%A3%E7%A0%81"><span class="toc-number">1.2.4.</span> <span class="toc-text">（4）实现代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%87%B9%E5%87%B8%E7%BA%B9%E7%90%86"><span class="toc-number">1.3.</span> <span class="toc-text">3. 凹凸纹理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%881%EF%BC%89%E5%87%B9%E5%87%B8%E7%BA%B9%E7%90%86%E6%98%AF%E7%94%A8%E6%9D%A5%E5%81%9A%E4%BB%80%E4%B9%88%E7%9A%84%EF%BC%9F"><span class="toc-number">1.3.1.</span> <span class="toc-text">（1）凹凸纹理是用来做什么的？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%882%EF%BC%89%E9%AB%98%E5%BA%A6%E7%BA%B9%E7%90%86%E8%B4%B4%E5%9B%BE-%E4%BA%86%E8%A7%A3"><span class="toc-number">1.3.2.</span> <span class="toc-text">（2）高度纹理贴图(了解)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%883%EF%BC%89%E6%B3%95%E7%BA%BF%E7%BA%B9%E7%90%86%E8%B4%B4%E5%9B%BE"><span class="toc-number">1.3.3.</span> <span class="toc-text">（3）法线纹理贴图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%884%EF%BC%89-%E6%B3%95%E7%BA%BF%E8%B4%B4%E5%9B%BE%E7%9A%84%E8%AE%A1%E7%AE%97%E6%96%B9%E5%BC%8F"><span class="toc-number">1.3.4.</span> <span class="toc-text">（4） 法线贴图的计算方式</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Shader/UnityShader%E5%85%A5%E9%97%A8%E2%80%94%E2%80%94%E7%BA%B9%E7%90%86%E5%92%8C%E9%80%8F%E6%98%8E/" title="UnityShader入门——纹理和透明">UnityShader入门——纹理和透明</a><time datetime="2025-07-22T06:14:08.876Z" title="发表于 2025-07-22 14:14:08">2025-07-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Lua/%E9%9D%A2%E8%AF%95%E9%A2%98%E7%9B%AE%E6%B1%87%E6%80%BB/" title="面试题目汇总">面试题目汇总</a><time datetime="2025-07-21T15:37:30.806Z" title="发表于 2025-07-21 23:37:30">2025-07-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Shader/UnityShader%E5%85%A5%E9%97%A8%E2%80%94%E2%80%94%E5%85%89%E7%85%A7/" title="UnityShader入门——光照">UnityShader入门——光照</a><time datetime="2025-07-20T15:12:23.650Z" title="发表于 2025-07-20 23:12:23">2025-07-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Shader/Shader%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/" title="UnityShader前置知识">UnityShader前置知识</a><time datetime="2025-07-19T11:17:23.633Z" title="发表于 2025-07-19 19:17:23">2025-07-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91/Unity%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%EF%BC%88%E4%BA%8C%EF%BC%89/" title="Unity网络开发基础（二）">Unity网络开发基础（二）</a><time datetime="2025-07-16T13:56:27.908Z" title="发表于 2025-07-16 21:56:27">2025-07-16</time></div></div></div></div></div></div></main><footer id="footer" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 40%,#34495e 60%,#2980b9 80%,#1a1a1a 100%);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By wqx</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
   const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
   const option = null
 
