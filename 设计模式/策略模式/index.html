@@ -1,0 +1,250 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>策略模式 | 游戏开发笔记</title><meta name="author" content="wqx"><meta name="copyright" content="wqx"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="详细请看：https:&#x2F;&#x2F;www.runoob.com&#x2F;design-pattern&#x2F;strategy-pattern.html 什么是策略模式？？？在策略模式（Strategy Pattern）中一个类的行为或其算法可以在运行时更改。这种类型的设计模式属于行为型模式。 在策略模式定义了一系列算法或策略，并将每个算法封装在独立的类中，使得它们可以互相替换。通过使用策略模式，可以在运行时根据需要选择">
+<meta property="og:type" content="article">
+<meta property="og:title" content="策略模式">
+<meta property="og:url" content="http://wqxblog.top/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:site_name" content="游戏开发笔记">
+<meta property="og:description" content="详细请看：https:&#x2F;&#x2F;www.runoob.com&#x2F;design-pattern&#x2F;strategy-pattern.html 什么是策略模式？？？在策略模式（Strategy Pattern）中一个类的行为或其算法可以在运行时更改。这种类型的设计模式属于行为型模式。 在策略模式定义了一系列算法或策略，并将每个算法封装在独立的类中，使得它们可以互相替换。通过使用策略模式，可以在运行时根据需要选择">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg">
+<meta property="article:published_time" content="2026-02-12T05:19:03.546Z">
+<meta property="article:modified_time" content="2026-02-12T05:30:00.191Z">
+<meta property="article:author" content="wqx">
+<meta property="article:tag" content="设计模式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "策略模式",
+  "url": "http://wqxblog.top/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/",
+  "image": "https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg",
+  "datePublished": "2026-02-12T05:19:03.546Z",
+  "dateModified": "2026-02-12T05:30:00.191Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "wqx",
+      "url": "http://wqxblog.top/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://wqxblog.top/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '策略模式',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 25%,#34495e 45%,#2980b9 80%,#1a1a1a 100%);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">32</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">21</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 40%,#34495e 60%,#2980b9 80%,#1a1a1a 100%);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">游戏开发笔记</span></a><a class="nav-page-title" href="/"><span class="site-name">策略模式</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">策略模式</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-02-12T05:19:03.546Z" title="发表于 2026-02-12 13:19:03">2026-02-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-02-12T05:30:00.191Z" title="更新于 2026-02-12 13:30:00">2026-02-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">644</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>详细请看：<a target="_blank" rel="noopener" href="https://www.runoob.com/design-pattern/strategy-pattern.html">https://www.runoob.com/design-pattern/strategy-pattern.html</a></p>
+<h2 id="什么是策略模式？？？"><a href="#什么是策略模式？？？" class="headerlink" title="什么是策略模式？？？"></a>什么是策略模式？？？</h2><p><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">在策略模式（Strategy Pattern）中一个</font><font style="color:#DF2A3F;background-color:rgb(250, 252, 253);">类的行为或其算法可以在运行时更改</font><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">。这种类型的设计模式属于行为型模式。</font></p>
+<p><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">在策略模式定义了一系列算法或策略，并将每个算法封装在独立的类中，使得它们可以互相替换。通过使用策略模式，可以在运行时根据需要选择不同的算法，而不需要修改客户端代码。</font></p>
+<p><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">在策略模式中，我们创建表示各种策略的对象和一个行为随着策略对象改变而改变的 context 对象。策略对象改变 context 对象的执行算法。</font></p>
+<h2 id="解决了什么问题"><a href="#解决了什么问题" class="headerlink" title="解决了什么问题"></a><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">解决了什么问题</font></h2><p><strong><font style="color:#4861E0;">解决在多种相似算法存在时，使用条件语句（如if…else）导致的复杂性和难以维护的问题。</font></strong></p>
+<h2 id="缺优点"><a href="#缺优点" class="headerlink" title="缺优点"></a><strong>缺优点</strong></h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">优点</font></h3><ol>
+<li><strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">算法切换自由</font></strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">：可以在运行时根据需要切换算法。</font></li>
+<li><strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">避免多重条件判断</font></strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">：消除了复杂的条件语句。</font></li>
+<li><strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">扩展性好</font></strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">：新增算法只需新增一个策略类，无需修改现有代码。</font></li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">缺点</font></h3><ol>
+<li><strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">策略类数量增多</font></strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">：每增加一个算法，就需要增加一个策略类。</font></li>
+<li><strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">所有策略类都需要暴露</font></strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">：策略类需要对外公开，以便可以被选择和使用。</font></li>
+</ol>
+<h3 id="使用建议"><a href="#使用建议" class="headerlink" title="使用建议"></a><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">使用建议</font></h3><p>:::danger</p>
+<ul>
+<li><font style="color:#AE146E;">当系统中有多种算法或行为，且它们之间可以相互替换时，使用策略模式。</font></li>
+<li><font style="color:#AE146E;">当系统需要动态选择算法时，策略模式是一个合适的选择。</font></li>
+</ul>
+<p>:::</p>
+<h2 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h2><ul>
+<li><strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">定义策略接口</font></strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">：所有策略类都将实现这个统一的接口。</font></li>
+<li><strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">创建具体策略类</font></strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">：每个策略类封装一个具体的算法或行为。</font></li>
+<li><strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">上下文类</font></strong><font style="color:rgb(51, 51, 51);background-color:rgb(250, 252, 253);">：包含一个策略对象的引用，并通过该引用调用策略。</font></li>
+</ul>
+<!-- 这是一张图片，ocr 内容为： -->
+<p><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typora1766973900801-35322eee-97dd-429b-8896-808cba5f5dbb.jpeg"></p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IStrategy</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="built_in">int</span> <span class="title">DoOperation</span>(<span class="params"><span class="built_in">int</span> num1, <span class="built_in">int</span> num2</span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">OperationAdd</span> : <span class="title">IStrategy</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">DoOperation</span>(<span class="params"><span class="built_in">int</span> num1, <span class="built_in">int</span> num2</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> num1 + num2;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">OperationSubtract</span> : <span class="title">IStrategy</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">DoOperation</span>(<span class="params"><span class="built_in">int</span> num1, <span class="built_in">int</span> num2</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> (num1 - num2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">OperationMultiply</span> : <span class="title">IStrategy</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">DoOperation</span>(<span class="params"><span class="built_in">int</span> num1, <span class="built_in">int</span> num2</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> (num1 * num2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Context</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> IStrategy strategy;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Context</span>(<span class="params">IStrategy strategy</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">this</span>.strategy = strategy;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ExecuteOperation</span>(<span class="params"><span class="built_in">int</span> num1 , <span class="built_in">int</span> num2</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">       Debug.Log( strategy.DoOperation(num1,num2 ));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="built_in">enum</span> StrategyType</span><br><span class="line">&#123;</span><br><span class="line">    Add,</span><br><span class="line">    Subtract,</span><br><span class="line">    Multiply</span><br><span class="line">&#125;</span><br><span class="line">     <span class="keyword">public</span> StrategyType strategyType;</span><br><span class="line">     <span class="keyword">private</span> Context context;</span><br><span class="line"></span><br><span class="line">     <span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">     &#123;</span><br><span class="line">         <span class="comment">//动态切换算法</span></span><br><span class="line">             <span class="keyword">if</span> (strategyType == StrategyType.Add)</span><br><span class="line">             &#123;</span><br><span class="line">                 context = <span class="keyword">new</span> Context(<span class="keyword">new</span> OperationAdd());</span><br><span class="line">               </span><br><span class="line">             &#125;</span><br><span class="line">             <span class="keyword">else</span> <span class="keyword">if</span> (strategyType == StrategyType.Subtract)</span><br><span class="line">             &#123;</span><br><span class="line">                  context = <span class="keyword">new</span> Context(<span class="keyword">new</span> OperationSubtract());</span><br><span class="line"> </span><br><span class="line">             &#125;</span><br><span class="line">          <span class="comment">//统一执行算法</span></span><br><span class="line">         context.ExecuteOperation(<span class="number">5</span>, <span class="number">5</span>);</span><br><span class="line"></span><br><span class="line">     &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://wqxblog.top">wqx</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://wqxblog.top/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/">http://wqxblog.top/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://wqxblog.top" target="_blank">游戏开发笔记</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></div><div class="post-share"><div class="social-share" data-image="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/" title="抽象工厂模式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">抽象工厂模式</div></div><div class="info-2"><div class="info-item-1">更详细见：https://www.runoob.com/design-pattern/abstract-factory-pattern.html 什么是抽象工厂抽象工厂就是从一个大工厂创建n多个小工厂，再从小工厂里面创建对象  适用场景：当系统需要创建多个相关或依赖的对象，而不需要指定具体类时。 运用实例：假设有不同类型的衣柜，每个衣柜（具体工厂）只能存放一类衣服（成套的具体产品），如商务装、时尚装等。每套衣服包括具体的上衣和裤子（具体产品）。所有衣柜都是衣柜类（抽象工厂）的具体实现，所有上衣和裤子分别实现上衣接口和裤子接口（抽象产品）。 与简单工厂区别：可以批量管理相关联对象  缺优点 优点：  a. 确保同一产品族的对象一起工作 比如都是怪物和颜色产品族，有哥布林、巨魔，每个怪物都得有颜色 b. 客户端不需要知道每个对象的具体类，简化了代码。直接干就行。  缺点：  扩展产品族非常困难。增加一个新的产品呢族需要修改抽象工厂和所以具体工厂的代码 比如：新增了个道具族，抽象工厂要新增一个抽象的创建方法。所有具体的工厂必须去实现那个新增的方法。同时还要新增工厂类 使用场景 QQ...</div></div></div></a><a class="pagination-related" href="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/" title="状态模式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">状态模式</div></div><div class="info-2"><div class="info-item-1">详细请见：https://www.runoob.com/design-pattern/state-pattern.html 此为FSM有限状态机的基础 什么是状态模式？如果一个角色现在有如下几个状态，待机、攻击、巡逻等，且当前只有一个状态。 正常在书写代码时进行状态切换往往会维护一个超级史山的ifelse语句非常不便。 1234567891011121314151617181920212223242526272829303132333435363738public class Player&#123;    public enum PlayerState &#123; Idle, Move, Attack, Hurt, Dead &#125;    public PlayerState currentState;    public void Update()    &#123;        switch (currentState)        &#123;            case PlayerState.Idle:               ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E4%BA%8B%E4%BB%B6%E4%B8%AD%E5%BF%83/" title="观察者设计模式（事件中心）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-01</div><div class="info-item-2">观察者设计模式（事件中心）</div></div><div class="info-2"><div class="info-item-1">  引言：本文主要为介绍基于观察者设计模式的事件中心   事件中心的主要作用举例抛出问题  现在有这么种情况，怪物死亡往往伴随着任务更新、玩家获得奖励、或者其他等等        下面为示例代码  怪物代码：   12345678910111213141516171819202122public class Monster : MonoBehaviour&#123;    // Start is called before the first frame update    void Start()    &#123;        Dead();    &#125;    void Dead()    &#123;        Debug.Log(&quot;怪物死亡了&quot;);        //其他对象在怪物死亡时想做的事情        //比如        //1.任务更新        GameObject.Find(&quot;Task&quot;).GetComponent&lt;Task&gt;().TaskWaitMonsterDeadDo(); ...</div></div></div></a><a class="pagination-related" href="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/" title="抽象工厂模式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-12</div><div class="info-item-2">抽象工厂模式</div></div><div class="info-2"><div class="info-item-1">更详细见：https://www.runoob.com/design-pattern/abstract-factory-pattern.html 什么是抽象工厂抽象工厂就是从一个大工厂创建n多个小工厂，再从小工厂里面创建对象  适用场景：当系统需要创建多个相关或依赖的对象，而不需要指定具体类时。 运用实例：假设有不同类型的衣柜，每个衣柜（具体工厂）只能存放一类衣服（成套的具体产品），如商务装、时尚装等。每套衣服包括具体的上衣和裤子（具体产品）。所有衣柜都是衣柜类（抽象工厂）的具体实现，所有上衣和裤子分别实现上衣接口和裤子接口（抽象产品）。 与简单工厂区别：可以批量管理相关联对象  缺优点 优点：  a. 确保同一产品族的对象一起工作 比如都是怪物和颜色产品族，有哥布林、巨魔，每个怪物都得有颜色 b. 客户端不需要知道每个对象的具体类，简化了代码。直接干就行。  缺点：  扩展产品族非常困难。增加一个新的产品呢族需要修改抽象工厂和所以具体工厂的代码 比如：新增了个道具族，抽象工厂要新增一个抽象的创建方法。所有具体的工厂必须去实现那个新增的方法。同时还要新增工厂类 使用场景 QQ...</div></div></div></a><a class="pagination-related" href="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/" title="状态模式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-12</div><div class="info-item-2">状态模式</div></div><div class="info-2"><div class="info-item-1">详细请见：https://www.runoob.com/design-pattern/state-pattern.html 此为FSM有限状态机的基础 什么是状态模式？如果一个角色现在有如下几个状态，待机、攻击、巡逻等，且当前只有一个状态。 正常在书写代码时进行状态切换往往会维护一个超级史山的ifelse语句非常不便。 1234567891011121314151617181920212223242526272829303132333435363738public class Player&#123;    public enum PlayerState &#123; Idle, Move, Attack, Hurt, Dead &#125;    public PlayerState currentState;    public void Update()    &#123;        switch (currentState)        &#123;            case PlayerState.Idle:               ...</div></div></div></a><a class="pagination-related" href="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/" title="简单工厂模式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-12</div><div class="info-item-2">简单工厂模式</div></div><div class="info-2"><div class="info-item-1">详细见：https://www.runoob.com/design-pattern/factory-pattern.html 什么是工厂模式 工厂模式（Factory Pattern）是 Java 中最常用的设计模式之一，它提供了一种创建对象的方式，使得创建对象的过程与使用对象的过程分离。 工厂模式提供了一种创建对象的方式，而无需指定要创建的具体类。 通过使用工厂模式，可以将对象的创建逻辑封装在一个工厂类中，而不是在客户端代码中直接实例化对象，这样可以提高代码的可维护性和可扩展性。 说人话：实例化对象时直接new就行，其他都不用管。  比如：你需要一辆汽车，只需从工厂提货，而不需要关心汽车的制造过程及其内部实现。 工厂模式类型 简单工厂模式:  简单工厂模式不是一个正式的设计模式，但它是工厂模式的基础。 它使用一个单独的工厂类来创建不同...</div></div></div></a><a class="pagination-related" href="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F/" title="装饰器模式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-02-12</div><div class="info-item-2">装饰器模式</div></div><div class="info-2"><div class="info-item-1">详细见：https://www.runoob.com/design-pattern/decorator-pattern.html 什么是装饰器模式？？ 装饰器模式：允许向一个现有的对象添加新的功能，同时又不改变其结构。 说人话：我原本的类不想改，但是我还想添加额外的功能 实现思想：套娃  主要解决了什么问题？ 避免通过继承引入静态特征，特别是在子类数量急剧膨胀的情况下。 允许在运行时动态地添加或修改对象的功能。  :::color4使用建议：  在需要动态扩展功能时，考虑使用装饰器模式。 保持装饰者和具体组件的接口一致，以确保灵活性。  ::: 具体实现  下面以简单的附魔系统演示代码 12345678910111213public interface IWeapon &#123;    void Attack();&#125;public class Sword : IWeapon&#123;    public void Attack()    &#123;        Debug.Log(&quot;挥剑攻击!&quot;);   ...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">wqx</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">32</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">21</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">-只用于学习如有版权问题请联系我 484807196@qq.com</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%EF%BC%9F%EF%BC%9F%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">什么是策略模式？？？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E4%BA%86%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98"><span class="toc-number">2.</span> <span class="toc-text">解决了什么问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%BA%E4%BC%98%E7%82%B9"><span class="toc-number">3.</span> <span class="toc-text">缺优点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">3.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">3.2.</span> <span class="toc-text">缺点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%BB%BA%E8%AE%AE"><span class="toc-number">3.3.</span> <span class="toc-text">使用建议</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0"><span class="toc-number">4.</span> <span class="toc-text">具体实现</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F/" title="装饰器模式">装饰器模式</a><time datetime="2026-02-12T05:21:23.048Z" title="发表于 2026-02-12 13:21:23">2026-02-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/" title="状态模式">状态模式</a><time datetime="2026-02-12T05:20:46.205Z" title="发表于 2026-02-12 13:20:46">2026-02-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/" title="策略模式">策略模式</a><time datetime="2026-02-12T05:19:03.546Z" title="发表于 2026-02-12 13:19:03">2026-02-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/" title="抽象工厂模式">抽象工厂模式</a><time datetime="2026-02-12T05:18:19.811Z" title="发表于 2026-02-12 13:18:19">2026-02-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/" title="简单工厂模式">简单工厂模式</a><time datetime="2026-02-12T05:17:30.907Z" title="发表于 2026-02-12 13:17:30">2026-02-12</time></div></div></div></div></div></div></main><footer id="footer" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 40%,#34495e 60%,#2980b9 80%,#1a1a1a 100%);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By wqx</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const initValine = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyValine = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const valineConfig = {
+      el: '#vcomment',
+      appId: 'pjJwWJWtXHLRCDLec3YJwOKJ-gzGzoHsz',
+      appKey: 'iQtqxeQmZAFwQ0VtxYgke25D',
+      avatar: 'monsterid',
+      serverURLs: 'https://pjjwwjwt.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      visitor: false,
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || window.location.pathname
+    }
+
+    new Valine(valineConfig)
+  }
+
+  const loadValine = async (el, path) => {
+    if (typeof Valine === 'function') {
+      initValine(el, path)
+    } else {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js')
+      initValine(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Valine' === 'Valine'
+      ? window.shuoshuoComment = { loadComment: loadValine }
+      : window.loadOtherComment = loadValine
+    return
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
