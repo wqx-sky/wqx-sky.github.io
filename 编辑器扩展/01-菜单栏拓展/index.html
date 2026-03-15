@@ -1,0 +1,236 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Unity编辑器扩展入门——自定义菜单栏拓展 | 游戏开发笔记</title><meta name="author" content="wqx"><meta name="copyright" content="wqx"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Lesson1 - 自定义菜单栏拓展Editor 特殊文件夹所有使用 UnityEditor 命名空间的脚本必须放在 Assets&#x2F;Editor 文件夹中。这个文件夹中的代码不会被打入游戏包，避免打包时报错。 MenuItem 特性 - 创建菜单在静态方法前添加 [MenuItem(&quot;路径&quot;)] 特性可在编辑器菜单创建自定义菜单项。 顶级菜单栏1234[MenuIte">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity编辑器扩展入门——自定义菜单栏拓展">
+<meta property="og:url" content="http://wqxblog.top/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/01-%E8%8F%9C%E5%8D%95%E6%A0%8F%E6%8B%93%E5%B1%95/index.html">
+<meta property="og:site_name" content="游戏开发笔记">
+<meta property="og:description" content="Lesson1 - 自定义菜单栏拓展Editor 特殊文件夹所有使用 UnityEditor 命名空间的脚本必须放在 Assets&#x2F;Editor 文件夹中。这个文件夹中的代码不会被打入游戏包，避免打包时报错。 MenuItem 特性 - 创建菜单在静态方法前添加 [MenuItem(&quot;路径&quot;)] 特性可在编辑器菜单创建自定义菜单项。 顶级菜单栏1234[MenuIte">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg">
+<meta property="article:published_time" content="2026-03-15T05:16:07.548Z">
+<meta property="article:modified_time" content="2026-03-15T05:17:15.028Z">
+<meta property="article:author" content="wqx">
+<meta property="article:tag" content="编辑器扩展">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Unity编辑器扩展入门——自定义菜单栏拓展",
+  "url": "http://wqxblog.top/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/01-%E8%8F%9C%E5%8D%95%E6%A0%8F%E6%8B%93%E5%B1%95/",
+  "image": "https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg",
+  "datePublished": "2026-03-15T05:16:07.548Z",
+  "dateModified": "2026-03-15T05:17:15.028Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "wqx",
+      "url": "http://wqxblog.top/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://wqxblog.top/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/01-%E8%8F%9C%E5%8D%95%E6%A0%8F%E6%8B%93%E5%B1%95/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Unity编辑器扩展入门——自定义菜单栏拓展',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 25%,#34495e 45%,#2980b9 80%,#1a1a1a 100%);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">22</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 40%,#34495e 60%,#2980b9 80%,#1a1a1a 100%);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">游戏开发笔记</span></a><a class="nav-page-title" href="/"><span class="site-name">Unity编辑器扩展入门——自定义菜单栏拓展</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Unity编辑器扩展入门——自定义菜单栏拓展</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-03-15T05:16:07.548Z" title="发表于 2026-03-15 13:16:07">2026-03-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-03-15T05:17:15.028Z" title="更新于 2026-03-15 13:17:15">2026-03-15</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/">编辑器扩展</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">365</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>1分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Lesson1-自定义菜单栏拓展"><a href="#Lesson1-自定义菜单栏拓展" class="headerlink" title="Lesson1 - 自定义菜单栏拓展"></a>Lesson1 - 自定义菜单栏拓展</h1><h2 id="Editor-特殊文件夹"><a href="#Editor-特殊文件夹" class="headerlink" title="Editor 特殊文件夹"></a>Editor 特殊文件夹</h2><p>所有使用 UnityEditor 命名空间的脚本必须放在 Assets&#x2F;Editor 文件夹中。这个文件夹中的代码不会被打入游戏包，避免打包时报错。</p>
+<h2 id="MenuItem-特性-创建菜单"><a href="#MenuItem-特性-创建菜单" class="headerlink" title="MenuItem 特性 - 创建菜单"></a>MenuItem 特性 - 创建菜单</h2><p>在静态方法前添加 <code>[MenuItem(&quot;路径&quot;)]</code> 特性可在编辑器菜单创建自定义菜单项。</p>
+<h3 id="顶级菜单栏"><a href="#顶级菜单栏" class="headerlink" title="顶级菜单栏"></a>顶级菜单栏</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">MenuItem(<span class="string">&quot;Unity编辑器拓展/Lesson1/TestFun&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">TestFun</span>()</span> &#123;</span><br><span class="line">    Debug.Log(<span class="string">&quot;菜单被点击&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Hierarchy-窗口右键菜单"><a href="#Hierarchy-窗口右键菜单" class="headerlink" title="Hierarchy 窗口右键菜单"></a>Hierarchy 窗口右键菜单</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">MenuItem(<span class="string">&quot;GameObject/Lesson1/TestFun&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">TestFun2</span>()</span> &#123;</span><br><span class="line">    Debug.Log(<span class="string">&quot;TestFun2&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Project-窗口右键菜单"><a href="#Project-窗口右键菜单" class="headerlink" title="Project 窗口右键菜单"></a>Project 窗口右键菜单</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">MenuItem(<span class="string">&quot;Assets/Lesson1/TestFun&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">TestFun3</span>()</span> &#123;</span><br><span class="line">    Debug.Log(<span class="string">&quot;TestFun3&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Inspector-脚本右键菜单"><a href="#Inspector-脚本右键菜单" class="headerlink" title="Inspector 脚本右键菜单"></a>Inspector 脚本右键菜单</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">MenuItem(<span class="string">&quot;CONTEXT/脚本类名/菜单项名&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">TestFun4</span>()</span> &#123;</span><br><span class="line">    Debug.Log(<span class="string">&quot;TestFun4&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="添加快捷键"><a href="#添加快捷键" class="headerlink" title="添加快捷键"></a>添加快捷键</h2><p>菜单路径后添加快捷键符号实现快捷操作。</p>
+<h3 id="符号含义"><a href="#符号含义" class="headerlink" title="符号含义"></a>符号含义</h3><ul>
+<li><code>%</code> 表示 Ctrl</li>
+<li><code>#</code> 表示 Shift</li>
+<li><code>&amp;</code> 表示 Alt</li>
+</ul>
+<h3 id="快捷键语法"><a href="#快捷键语法" class="headerlink" title="快捷键语法"></a>快捷键语法</h3><p>单按键：<code>[MenuItem(&quot;菜单/项 _A&quot;)]</code> 表示按 A 键触发</p>
+<p>组合键：<code>[MenuItem(&quot;菜单/项 %#&amp;A&quot;)]</code> 表示 Ctrl+Shift+Alt+A 触发</p>
+<h3 id="支持的特殊按键"><a href="#支持的特殊按键" class="headerlink" title="支持的特殊按键"></a>支持的特殊按键</h3><p>LEFT、RIGHT、UP、DOWN、F1-F12、HOME、END、PGUP、PGDN</p>
+<h2 id="AddComponentMenu-特性"><a href="#AddComponentMenu-特性" class="headerlink" title="AddComponentMenu 特性"></a>AddComponentMenu 特性</h2><p>为继承 MonoBehaviour 的脚本添加，允许通过 Component 菜单直接添加脚本。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">AddComponentMenu(<span class="string">&quot;Tools/MyScript&quot;</span>)</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyScript</span> : <span class="title">MonoBehaviour</span> &#123;</span><br><span class="line">    <span class="comment">// 脚本内容</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用时在 Inspector 中点击 Add Component，搜索 MyScript 即可找到。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://wqxblog.top">wqx</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://wqxblog.top/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/01-%E8%8F%9C%E5%8D%95%E6%A0%8F%E6%8B%93%E5%B1%95/">http://wqxblog.top/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/01-%E8%8F%9C%E5%8D%95%E6%A0%8F%E6%8B%93%E5%B1%95/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://wqxblog.top" target="_blank">游戏开发笔记</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/">编辑器扩展</a></div><div class="post-share"><div class="social-share" data-image="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/22-23-Inspector%E6%8B%93%E5%B1%95/" title="Unity编辑器扩展入门——Inspector 窗口拓展"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Unity编辑器扩展入门——Inspector 窗口拓展</div></div><div class="info-2"><div class="info-item-1">Lesson22-23 - Inspector 窗口拓展Inspector 拓展概述通过 CustomEditor 特性，可以完全自定义脚本在 Inspector 窗口中的显示方式。这提供了强大的编辑器自定义能力。 基础框架创建自定义编辑器脚本命名约定：在目标脚本名后加 Editor，并放在 Editor 文件夹中。 123456789using UnityEditor;using UnityEngine;[CustomEditor(typeof(MyScript))]public class MyScriptEditor : Editor &#123;    public override void OnInspectorGUI() &#123;        EditorGUILayout.LabelField(&quot;这是自定义 Inspector&quot;);    &#125;&#125;  CustomEditor...</div></div></div></a><a class="pagination-related" href="/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/02-%E7%BC%96%E8%BE%91%E5%99%A8%E7%AA%97%E5%8F%A3/" title="Unity编辑器扩展入门——自定义编辑器窗口"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Unity编辑器扩展入门——自定义编辑器窗口</div></div><div class="info-2"><div class="info-item-1">Lesson2 - 自定义编辑器窗口EditorWindow 基础继承 EditorWindow 类并重写 OnGUI 方法可以创建自定义编辑器窗口。这是实现编辑器拓展的基础。 创建并显示窗口123456789101112131415161718using UnityEditor;using UnityEngine;public class MyWindow : EditorWindow &#123;    [MenuItem(&quot;Window/My Custom Window&quot;)]    public static void ShowWindow() &#123;        MyWindow win = EditorWindow.GetWindow&lt;MyWindow&gt;(&quot;窗口标题&quot;);        win.titleContent = new GUIContent(&quot;我的窗口&quot;);        win.Show();    &#125;        private void OnGUI()...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/03-11-EditorGUI%E6%8E%A7%E4%BB%B6/" title="Unity编辑器扩展入门——EditorGUI 控件系列总览"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-15</div><div class="info-item-2">Unity编辑器扩展入门——EditorGUI 控件系列总览</div></div><div class="info-2"><div class="info-item-1">Lesson3-11 - EditorGUI 控件系列总览GUILayout vs EditorGUILayoutGUILayout：基础 GUI 自动布局类，所有控件位置自动排列，无需手动设置 Rect。 EditorGUILayout：编辑器专用 GUI 自动布局类，提供更多编辑器相关的控件。 EditorGUI：编辑器 GUI 类，需要手动指定控件位置和大小。 在编辑器拓展开发中，通常使用 EditorGUILayout，因为它提供了更多编辑器功能且自动布局。 Lesson3 - EditorGUI 总览EditorGUI 包含各种编辑器专用的 UI 控件。实际使用时通常在 EditorWindow 的 OnGUI 方法中调用，使用 EditorGUILayout 版本。 Lesson4 - 文本、层级、标签、颜色文本标签12EditorGUILayout.LabelField(&quot;标题&quot;, &quot;内容&quot;);EditorGUILayout.LabelField(&quot;仅显示标题&quot;);  层级（Layer）选择1int...</div></div></div></a><a class="pagination-related" href="/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/02-%E7%BC%96%E8%BE%91%E5%99%A8%E7%AA%97%E5%8F%A3/" title="Unity编辑器扩展入门——自定义编辑器窗口"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-15</div><div class="info-item-2">Unity编辑器扩展入门——自定义编辑器窗口</div></div><div class="info-2"><div class="info-item-1">Lesson2 - 自定义编辑器窗口EditorWindow 基础继承 EditorWindow 类并重写 OnGUI 方法可以创建自定义编辑器窗口。这是实现编辑器拓展的基础。 创建并显示窗口123456789101112131415161718using UnityEditor;using UnityEngine;public class MyWindow : EditorWindow &#123;    [MenuItem(&quot;Window/My Custom Window&quot;)]    public static void ShowWindow() &#123;        MyWindow win = EditorWindow.GetWindow&lt;MyWindow&gt;(&quot;窗口标题&quot;);        win.titleContent = new GUIContent(&quot;我的窗口&quot;);        win.Show();    &#125;        private void OnGUI()...</div></div></div></a><a class="pagination-related" href="/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/12-EditorGUIUtility/" title="Unity编辑器扩展入门——EditorGUIUtility 工具类"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-15</div><div class="info-item-2">Unity编辑器扩展入门——EditorGUIUtility 工具类</div></div><div class="info-2"><div class="info-item-1">Lesson12 - EditorGUIUtility 工具类EditorGUIUtility 概述EditorGUIUtility 是 EditorGUI 的实用工具类，提供编辑器拓展开发中常用的辅助功能，如资源加载、对象选择、事件传递等。 资源加载 - Editor Default Resources创建特殊文件夹在 Assets 下创建 Editor Default Resources 文件夹（注意：文件夹名称必须完全相同，包括大小写和空格）。这个文件夹中的资源可以被 EditorGUIUtility 加载。 加载资源（不存在返回 null）1Texture img = EditorGUIUtility.Load(&quot;HelloWorld.png&quot;) as Texture;  如果资源不存在，返回 null。必须包含文件后缀名。 加载资源（不存在报错）1Texture img = EditorGUIUtility.LoadRequired(&quot;HelloWorld.png&quot;) as...</div></div></div></a><a class="pagination-related" href="/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/18-20-Selection%E7%B1%BB/" title="Unity编辑器扩展入门——Selection 类"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-15</div><div class="info-item-2">Unity编辑器扩展入门——Selection 类</div></div><div class="info-2"><div class="info-item-1">Lesson18-20 - Selection 类Selection 概述Selection 类用于在编辑器中获取当前选中的对象，只能在编辑模式下使用。通过 Selection 可以监听用户的选择变化，进而实现更多交互功能。 获取单个对象获取选中的 Object1Object selectedObj = Selection.activeObject;  返回当前选中的 Object。如果未选中任何对象返回 null。如果选中了多个对象，返回第一个。 获取选中的 GameObject1GameObject selectedGO = Selection.activeGameObject;  返回当前选中的 GameObject。仅当选中的是 GameObject 时才有效。 获取选中的 Transform1Transform selectedTransform = Selection.activeTransform;  返回选中的 Transform。仅限于场景中的对象，项目资源中的预制体无法获取。 获取所有选中对象获取所有 Object1234567Object[]...</div></div></div></a><a class="pagination-related" href="/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/21-Event%E4%BA%8B%E4%BB%B6%E7%B3%BB%E7%BB%9F/" title="Unity编辑器扩展入门——Event 事件系统"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-15</div><div class="info-item-2">Unity编辑器扩展入门——Event 事件系统</div></div><div class="info-2"><div class="info-item-1">Lesson21 - Event 事件系统Event 概述Event 类用于在编辑模式下监听用户的键盘、鼠标等输入事件。与运行时的 Input 类不同，Event 专门用于编辑器拓展开发，在 OnGUI 和 SceneView 回调中使用。 获取当前事件Event.current1Event e = Event.current;  获取当前帧的输入事件。每个 OnGUI 帧都会有一个当前事件。 重要：避免在布局计算期间多次访问 Event.current，应该在函数开头缓存： 1234567private void OnGUI() &#123;    Event e = Event.current; // 只获取一次        if (e.type == EventType.MouseDown) &#123;        // 处理鼠标按下    &#125;&#125;  修饰键检测Alt、Shift、Ctrl 键123if (e.alt)     Debug.Log(&quot;Alt 被按下&quot;);if (e.shift)  ...</div></div></div></a><a class="pagination-related" href="/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/22-23-Inspector%E6%8B%93%E5%B1%95/" title="Unity编辑器扩展入门——Inspector 窗口拓展"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-15</div><div class="info-item-2">Unity编辑器扩展入门——Inspector 窗口拓展</div></div><div class="info-2"><div class="info-item-1">Lesson22-23 - Inspector 窗口拓展Inspector 拓展概述通过 CustomEditor 特性，可以完全自定义脚本在 Inspector 窗口中的显示方式。这提供了强大的编辑器自定义能力。 基础框架创建自定义编辑器脚本命名约定：在目标脚本名后加 Editor，并放在 Editor 文件夹中。 123456789using UnityEditor;using UnityEngine;[CustomEditor(typeof(MyScript))]public class MyScriptEditor : Editor &#123;    public override void OnInspectorGUI() &#123;        EditorGUILayout.LabelField(&quot;这是自定义 Inspector&quot;);    &#125;&#125;  CustomEditor...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://skymirror-1316984539.cos.ap-beijing.myqcloud.com/Typoramimi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">wqx</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">22</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">-只用于学习如有版权问题请联系我 484807196@qq.com</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Lesson1-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%8F%9C%E5%8D%95%E6%A0%8F%E6%8B%93%E5%B1%95"><span class="toc-number">1.</span> <span class="toc-text">Lesson1 - 自定义菜单栏拓展</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Editor-%E7%89%B9%E6%AE%8A%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="toc-number">1.1.</span> <span class="toc-text">Editor 特殊文件夹</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MenuItem-%E7%89%B9%E6%80%A7-%E5%88%9B%E5%BB%BA%E8%8F%9C%E5%8D%95"><span class="toc-number">1.2.</span> <span class="toc-text">MenuItem 特性 - 创建菜单</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%B6%E7%BA%A7%E8%8F%9C%E5%8D%95%E6%A0%8F"><span class="toc-number">1.2.1.</span> <span class="toc-text">顶级菜单栏</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hierarchy-%E7%AA%97%E5%8F%A3%E5%8F%B3%E9%94%AE%E8%8F%9C%E5%8D%95"><span class="toc-number">1.2.2.</span> <span class="toc-text">Hierarchy 窗口右键菜单</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Project-%E7%AA%97%E5%8F%A3%E5%8F%B3%E9%94%AE%E8%8F%9C%E5%8D%95"><span class="toc-number">1.2.3.</span> <span class="toc-text">Project 窗口右键菜单</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Inspector-%E8%84%9A%E6%9C%AC%E5%8F%B3%E9%94%AE%E8%8F%9C%E5%8D%95"><span class="toc-number">1.2.4.</span> <span class="toc-text">Inspector 脚本右键菜单</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="toc-number">1.3.</span> <span class="toc-text">添加快捷键</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%A6%E5%8F%B7%E5%90%AB%E4%B9%89"><span class="toc-number">1.3.1.</span> <span class="toc-text">符号含义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E6%8D%B7%E9%94%AE%E8%AF%AD%E6%B3%95"><span class="toc-number">1.3.2.</span> <span class="toc-text">快捷键语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%AF%E6%8C%81%E7%9A%84%E7%89%B9%E6%AE%8A%E6%8C%89%E9%94%AE"><span class="toc-number">1.3.3.</span> <span class="toc-text">支持的特殊按键</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AddComponentMenu-%E7%89%B9%E6%80%A7"><span class="toc-number">1.4.</span> <span class="toc-text">AddComponentMenu 特性</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/21-Event%E4%BA%8B%E4%BB%B6%E7%B3%BB%E7%BB%9F/" title="Unity编辑器扩展入门——Event 事件系统">Unity编辑器扩展入门——Event 事件系统</a><time datetime="2026-03-15T05:16:07.571Z" title="发表于 2026-03-15 13:16:07">2026-03-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/18-20-Selection%E7%B1%BB/" title="Unity编辑器扩展入门——Selection 类">Unity编辑器扩展入门——Selection 类</a><time datetime="2026-03-15T05:16:07.567Z" title="发表于 2026-03-15 13:16:07">2026-03-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/12-EditorGUIUtility/" title="Unity编辑器扩展入门——EditorGUIUtility 工具类">Unity编辑器扩展入门——EditorGUIUtility 工具类</a><time datetime="2026-03-15T05:16:07.562Z" title="发表于 2026-03-15 13:16:07">2026-03-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/03-11-EditorGUI%E6%8E%A7%E4%BB%B6/" title="Unity编辑器扩展入门——EditorGUI 控件系列总览">Unity编辑器扩展入门——EditorGUI 控件系列总览</a><time datetime="2026-03-15T05:16:07.557Z" title="发表于 2026-03-15 13:16:07">2026-03-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/%E7%BC%96%E8%BE%91%E5%99%A8%E6%89%A9%E5%B1%95/02-%E7%BC%96%E8%BE%91%E5%99%A8%E7%AA%97%E5%8F%A3/" title="Unity编辑器扩展入门——自定义编辑器窗口">Unity编辑器扩展入门——自定义编辑器窗口</a><time datetime="2026-03-15T05:16:07.553Z" title="发表于 2026-03-15 13:16:07">2026-03-15</time></div></div></div></div></div></div></main><footer id="footer" style="background: linear-gradient(135deg,#1a1a1a 0%,#2c3e50 40%,#34495e 60%,#2980b9 80%,#1a1a1a 100%);"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2026 By wqx</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const initValine = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyValine = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const valineConfig = {
+      el: '#vcomment',
+      appId: 'pjJwWJWtXHLRCDLec3YJwOKJ-gzGzoHsz',
+      appKey: 'iQtqxeQmZAFwQ0VtxYgke25D',
+      avatar: 'monsterid',
+      serverURLs: 'https://pjjwwjwt.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      visitor: false,
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || window.location.pathname
+    }
+
+    new Valine(valineConfig)
+  }
+
+  const loadValine = async (el, path) => {
+    if (typeof Valine === 'function') {
+      initValine(el, path)
+    } else {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js')
+      initValine(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Valine' === 'Valine'
+      ? window.shuoshuoComment = { loadComment: loadValine }
+      : window.loadOtherComment = loadValine
+    return
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
